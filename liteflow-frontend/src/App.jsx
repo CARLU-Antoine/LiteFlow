@@ -1,14 +1,13 @@
-// src/App.jsx
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import Navbar from './components/Navbar/navbar.jsx';
+
 function App() {
-  const ping = async () => {
-    const res = await window.api.ping();
-    alert(res);
-  };
 
   return (
-    <button onClick={ping}>
-      Tester Electron
-    </button>
+    <BrowserRouter>
+      <Navbar/>
+    </BrowserRouter>
   );
 }
 
