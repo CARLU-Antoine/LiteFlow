@@ -1,0 +1,40 @@
+.container-optimiser-pc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.header-optimiser-pc {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+
+.container-icon-optimiser-pc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: cornflowerblue;
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
+
+
+#svg-eclair {
+    width: 60px;
+    height: 60px;
+    fill: yellow;
+}
+
+.container-traitement-optimiser-pc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
