@@ -1,0 +1,79 @@
+.navbar {
+  background-color: whitesmoke;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  color: black;
+}
+
+.navbar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.navbar-title {
+  font-size: 24px;
+  color: black;
+  margin: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+#btn-logo-home {
+  width: 125px;
+  height: 125px;
+  display: block;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+#btn-logo-home:hover {
+  transform: scale(1.1);
+}
+
+.navbar-links {
+  width: 35vh;
+  font-size: 0.95em;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.navbar-item {
+  background-color: #F8F9FA;
+  padding: 15px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+  font-weight: 500;
+}
+
+.navbar-item:hover {
+  background-color: white;
+  border-left-color: #61dafb;
+}
+
+.navbar-item.actif {
+  background-color: white;
+  border-left-color: #61dafb;
+}
