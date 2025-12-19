@@ -42,12 +42,12 @@ function Navbar() {
         </li>
         <li>
           <NavLink
-            to="/connexion-vpn-telephones"
+            to="/connexion-vpn"
             className={({ isActive }) =>
               isActive ? 'navbar-item actif' : 'navbar-item'
             }
           >
-            Connexion VPN pour les téléphones
+            Connexion VPN
           </NavLink>
         </li>
       </ul>

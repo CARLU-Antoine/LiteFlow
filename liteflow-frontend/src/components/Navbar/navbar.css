@@ -7,7 +7,7 @@
   padding: 20px;
   min-height: 100vh;
   box-sizing: border-box;
-  color: black;
+  text-align: left;
 }
 
 .navbar-header {
