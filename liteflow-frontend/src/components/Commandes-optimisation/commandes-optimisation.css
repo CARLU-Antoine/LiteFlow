@@ -1,0 +1,26 @@
+#btn-back{
+    width: 5vh;
+    height: 5vh;
+    cursor: pointer;
+}
+.container-download-btn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.item-dowload-btn{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+}
+.btn-dowload-xlsx{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}

@@ -13,6 +13,7 @@ function App() {
         <Navbar />
         <div className="container-components">
         <Routes>
+          <Route path="/" element={<OptimiserPc />} />
           <Route path="/optimiser-pc" element={<OptimiserPc />} />
           <Route path="/commandes-optimisation" element={<CommandesOptimisation />} />
 
