@@ -4,13 +4,13 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import './commandes-optimisation.css';
-import { DataGrid } from '@mui/x-data-grid';
-import Paper from '@mui/material/Paper';
+import CustomDataGrid from '../CustomDataGrid/custom-datagrid.jsx';
+import * as XLSX from 'xlsx';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
   { field: 'commande', headerName: 'Nom de la commande', width: 200 },
-  { field: 'description', headerName: 'Utilisation CPU (%)', width: 600 }
+  { field: 'description', headerName: 'Description de la commande', width: 600 }
 ];
 
 const rowsPowershell = [
@@ -445,18 +445,94 @@ const rowsBash = [
   { id: 177, commande: 'rm testfile', description: 'Supprimer le fichier de test créé pour le benchmark' }
 ];
 
+
+
 function CommandesOptimisation() {
   const location = useLocation();
   const typeFromState = location.state?.type || 'Powershell';
   const [value, setValue] = React.useState(typeFromState === 'Powershell' ? 0 : 1);
 
+  // ✅ États corrigés - pas de duplication
+  const [selectedIdsPowershell, setSelectedIdsPowershell] = React.useState([]);
+  const [selectedRowsPowershell, setSelectedRowsPowershell] = React.useState([]);
+  
+  const [selectedIdsBash, setSelectedIdsBash] = React.useState([]);
+  const [selectedRowsBash, setSelectedRowsBash] = React.useState([]);
+  
+  // ✅ Fonction de téléchargement corrigée
+  const handleClickDownload = (type) => {
+    let selectedRows = [];
+    let selectedIds = [];
+
+    if (type === 'Powershell') {
+      if (selectedIdsPowershell.length === 0) {
+        alert("Aucune ligne sélectionnée pour Powershell !");
+        return;
+      }
+      selectedRows = selectedRowsPowershell;
+      selectedIds = selectedIdsPowershell;
+    } else if (type === 'Bash') {
+      if (selectedIdsBash.length === 0) {
+        alert("Aucune ligne sélectionnée pour Bash !");
+        return;
+      }
+      selectedRows = selectedRowsBash;
+      selectedIds = selectedIdsBash;
+    }
+
+    // Créer une feuille de calcul à partir des données sélectionnées
+    const ws = XLSX.utils.json_to_sheet(selectedRows);
+    
+    // Créer un classeur
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, type === 'Powershell' ? 'Commandes Powershell' : 'Commandes Bash');
+    
+    // Télécharger le fichier
+    XLSX.writeFile(wb, `commandes_${type.toLowerCase()}.xlsx`);
+  };
+
+  const handleSelectionChangePowershell = (ids, rows) => {
+    console.log("Powershell - IDs sélectionnés :", ids);
+    console.log("Powershell - Lignes sélectionnées :", rows);
+    setSelectedIdsPowershell(ids);
+    setSelectedRowsPowershell(rows);
+  };
+
+  const handleSelectionChangeBash = (ids, rows) => {
+    console.log("Bash - IDs sélectionnés :", ids);
+    console.log("Bash - Lignes sélectionnées :", rows);
+    setSelectedIdsBash(ids);
+    setSelectedRowsBash(rows);
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
-    <div className="commandes">
-      <h1>Commandes d'optimisation</h1>
+    <div>
+      <svg id="btn-back" onClick={handleBack} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+        <path d="M236.3 107.1C247.9 96 265 92.9 279.7 99.2C294.4 105.5 304 120 304 136L304 272.3L476.3 107.2C487.9 96 505 92.9 519.7 99.2C534.4 105.5 544 120 544 136L544 504C544 520 534.4 534.5 519.7 540.8C505 547.1 487.9 544 476.3 532.9L304 367.7L304 504C304 520 294.4 534.5 279.7 540.8C265 547.1 247.9 544 236.3 532.9L44.3 348.9C36.5 341.3 32 330.9 32 320C32 309.1 36.5 298.7 44.3 291.1L236.3 107.1z"/>
+      </svg>
+
+      <div className='container-download-btn'>
+        <div className="item-dowload-btn">
+          Powershell
+          <svg className="btn-dowload-xlsx" onClick={() => handleClickDownload("Powershell")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+            <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/>
+          </svg>
+        </div>
+        <div className="item-dowload-btn">
+          Bash
+          <svg className="btn-dowload-xlsx" onClick={() => handleClickDownload("Bash")} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+            <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/>
+          </svg>
+        </div>
+      </div>
 
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Powershell" />
@@ -466,34 +542,31 @@ function CommandesOptimisation() {
       <Box sx={{ mt: 2 }}>
         {value === 0 && (
           <div>
-        <Paper sx={{ height: '65vh', width: '100%' }}>
-          <DataGrid
-            rows={rowsPowershell}
-            columns={columns}
-            pageSizeOptions={[5, 10]}
-            checkboxSelection
-            sx={{ border: 0 }}
-          />
-        </Paper>
+            <CustomDataGrid
+              rows={rowsPowershell}
+              columns={columns}
+              onSelectionChange={handleSelectionChangePowershell}
+              pageSize={10}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              paperProps={{ sx: { height: '65vh', width: '100%', position: 'relative', marginTop: '20px' } }}
+            />
           </div>
         )}
         {value === 1 && (
           <div>
-          <Paper sx={{ height: '65vh', width: '100%' }}>
-            <DataGrid
+            <CustomDataGrid
               rows={rowsBash}
               columns={columns}
-              pageSizeOptions={[5, 10]}
-              checkboxSelection
-              sx={{ border: 0 }}
+              onSelectionChange={handleSelectionChangeBash}
+              pageSize={10}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              paperProps={{ sx: { height: '65vh', width: '100%', position: 'relative', marginTop: '20px' } }}
             />
-          </Paper>
           </div>
         )}
       </Box>
     </div>
   );
 }
-
 
 export default CommandesOptimisation;
