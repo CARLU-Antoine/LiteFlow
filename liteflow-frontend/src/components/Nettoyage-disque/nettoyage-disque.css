@@ -1,0 +1,30 @@
+.nettoyage-disque-container {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-nettoyage-disque{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.container-btn-download{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instructions-nettoyage-disque {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #e6f7ff;
+  border-radius: 4px;
+  border: 1px solid #91d5ff;
+}
+.container-autocomplete-nettoyage-disque{
+  width: 90%;
+}
