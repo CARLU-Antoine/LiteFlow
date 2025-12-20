@@ -1,0 +1,51 @@
+
+.container-connexion-vpn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    background: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.container-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: cornflowerblue;
+    border-radius: 50%;
+    width: 25vh;
+    height: 25vh;
+    margin: 50px auto;
+}
+
+
+.svg-icon {
+    width:15vh;
+    height: 15vh;
+    fill: #ffeb3b;
+}
+
+
+.container-select-region {
+    width: 75vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    box-sizing: border-box;
+}
+
+
+.select-region {
+    width: 40vh;
+    height: 50px;
+    padding: 0 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
