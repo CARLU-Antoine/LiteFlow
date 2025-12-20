@@ -5,7 +5,8 @@ import OptimiserPc from './components/Optimiser-pc/optimiser-pc.jsx';
 import CommandesOptimisation from './components/Commandes-optimisation/commandes-optimisation.jsx';
 import NettoyageDisque from './components/Nettoyage-disque/nettoyage-disque.jsx';
 import DesinstallationApplication from './components/Desinstallation-application/desinstallation-application.jsx';
-import './App.css';
+import ConnexionVPN from './components/Connexion-vpn/connexion-vpn.jsx';
+import ResultatHotspotVPN from './components/Connexion-vpn/resultat-hotpost-vpn.jsx';
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
           <Route path="/commandes-optimisation" element={<CommandesOptimisation />} />
           <Route path="/nettoyage-disque" element={<NettoyageDisque />} />
           <Route path="/desinstallation-applications" element={<DesinstallationApplication />} />
+          <Route path="/connexion-vpn" element={<ConnexionVPN />} />
+          <Route path="/resultat-hotpost-vpn" element={<ResultatHotspotVPN />} />
         </Routes>
         </div>
 

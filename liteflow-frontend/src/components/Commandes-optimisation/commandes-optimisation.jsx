@@ -451,11 +451,9 @@ function CommandesOptimisation() {
   const location = useLocation();
   const typeFromState = location.state?.type || 'Powershell';
   const [value, setValue] = React.useState(typeFromState === 'Powershell' ? 0 : 1);
-
-
+  
   const [selectedIdsPowershell, setSelectedIdsPowershell] = React.useState([]);
   const [selectedRowsPowershell, setSelectedRowsPowershell] = React.useState([]);
-  
   const [selectedIdsBash, setSelectedIdsBash] = React.useState([]);
   const [selectedRowsBash, setSelectedRowsBash] = React.useState([]);
   
