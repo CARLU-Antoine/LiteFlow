@@ -452,14 +452,14 @@ function CommandesOptimisation() {
   const typeFromState = location.state?.type || 'Powershell';
   const [value, setValue] = React.useState(typeFromState === 'Powershell' ? 0 : 1);
 
-  // ✅ États corrigés - pas de duplication
+
   const [selectedIdsPowershell, setSelectedIdsPowershell] = React.useState([]);
   const [selectedRowsPowershell, setSelectedRowsPowershell] = React.useState([]);
   
   const [selectedIdsBash, setSelectedIdsBash] = React.useState([]);
   const [selectedRowsBash, setSelectedRowsBash] = React.useState([]);
   
-  // ✅ Fonction de téléchargement corrigée
+
   const handleClickDownload = (type) => {
     let selectedRows = [];
     let selectedIds = [];
