@@ -168,7 +168,7 @@ function CustomAutocomplete({ value, onChange }) {
               </StyledTag>
             );
           })}
-          <input {...getInputProps()} placeholder="Cliquez sur le graphique pour ajouter..." />
+          <input {...getInputProps()} placeholder="Selectionnez les partitions à supprimer" />
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 && focused ? (
