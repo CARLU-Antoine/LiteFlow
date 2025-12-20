@@ -18,13 +18,15 @@
   gap: 10px;
 }
 
-.instructions-nettoyage-disque {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #e6f7ff;
-  border-radius: 4px;
-  border: 1px solid #91d5ff;
-}
 .container-autocomplete-nettoyage-disque{
-  width: 90%;
+  width: 80%;
+  display: flex;
+  gap: 3vh;
+}
+#btn-delete-partitions {
+  width: 40px;
+  height: 40px;
+  fill: #ff4d4f;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
