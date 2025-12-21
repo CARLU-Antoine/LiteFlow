@@ -58,6 +58,16 @@ function Navbar() {
             Connexion VPN
           </NavLink>
         </li>
+        <li>
+          <NavLink
+            to="/netdata-cpu-chart"
+            className={({ isActive }) =>
+              isActive ? 'navbar-item actif' : 'navbar-item'
+            }
+          >
+            Netdata cpu
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
