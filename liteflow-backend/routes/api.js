@@ -75,28 +75,5 @@ router.get('/processes', async (req, res) => {
   }
 });
 
-// ====================================
-// GET /api/dashboard (tout en une fois)
-// ====================================
-router.get('/dashboard', async (req, res) => {
-  try {
-    const [cpu, memory, disk, network] = await Promise.all([
-      systemService.getCPU(),
-      systemService.getMemory(),
-      systemService.getDisk(),
-      systemService.getNetwork(),
-    ]);
-    
-    res.json({
-      cpu,
-      memory,
-      disk,
-      network,
-      timestamp: Date.now(),
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 module.exports = router;

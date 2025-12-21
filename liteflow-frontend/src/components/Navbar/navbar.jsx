@@ -20,6 +20,16 @@ function Navbar() {
       <ul className="navbar-links">
         <li>
           <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? 'navbar-item actif' : 'navbar-item'
+            }
+          >
+            Dashboard
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
             to="/optimiser-pc"
             className={({ isActive }) =>
               isActive ? 'navbar-item actif' : 'navbar-item'
@@ -56,16 +66,6 @@ function Navbar() {
             }
           >
             Connexion VPN
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to="/netdata-cpu-chart"
-            className={({ isActive }) =>
-              isActive ? 'navbar-item actif' : 'navbar-item'
-            }
-          >
-            Netdata cpu
           </NavLink>
         </li>
       </ul>
