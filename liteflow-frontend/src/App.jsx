@@ -7,7 +7,7 @@ import NettoyageDisque from './components/Nettoyage-disque/nettoyage-disque.jsx'
 import DesinstallationApplication from './components/Desinstallation-application/desinstallation-application.jsx';
 import ConnexionVPN from './components/Connexion-vpn/connexion-vpn.jsx';
 import ResultatHotspotVPN from './components/Connexion-vpn/resultat-hotpost-vpn.jsx';
-import CPUChart from './components/Netdata-visualisation/cpu-chart.jsx';
+import CPUChart from './components/visualisation-cpu/cpu-chart.jsx';
 
 function App() {
 
