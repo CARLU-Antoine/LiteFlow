@@ -6,10 +6,19 @@ const apiRoutes = require('./routes/api');
 const app = express();
 
 // ====================================
-// Middleware
+// Middleware global
 // ====================================
 app.use(cors());
 app.use(express.json());
+
+// ====================================
+// Middleware de log des requêtes (temps réel)
+// ====================================
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 
 // ====================================
 // Routes
@@ -57,21 +66,9 @@ app.use((req, res) => {
 // Démarrage du serveur
 // ====================================
 app.listen(config.PORT, config.HOST, () => {
-  console.log('\n🚀 ====================================');
+  console.log('\n ====================================');
   console.log('   LiteFlow Backend API démarré !');
   console.log('====================================');
-  console.log(`📍 URL: http://${config.HOST}:${config.PORT}`);
-  console.log(`⚡ Environnement: ${process.env.NODE_ENV || 'development'}`);
-  console.log('\n📊 Endpoints disponibles:');
-  console.log(`   GET /api/cpu           - Données CPU avec historique`);
-  console.log(`   GET /api/memory        - Utilisation mémoire`);
-  console.log(`   GET /api/disk          - Utilisation disque`);
-  console.log(`   GET /api/network       - Statistiques réseau`);
-  console.log(`   GET /api/system-info   - Informations système`);
-  console.log(`   GET /api/processes     - Top processus`);
-  console.log(`   GET /api/dashboard     - Toutes les données`);
-  console.log(`   GET /health            - Health check`);
-  console.log('\n✅ Serveur prêt à recevoir des requêtes!\n');
 });
 
 // ====================================

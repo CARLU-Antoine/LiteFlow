@@ -6,7 +6,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
-import './systeminfo-chart.css'
+import './systeminfo.css'
 
 function SystemInfo() {
   const [systemInfo, setSystemInfo] = useState(null);

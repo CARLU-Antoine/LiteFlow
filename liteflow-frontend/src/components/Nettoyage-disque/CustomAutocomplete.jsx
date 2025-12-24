@@ -122,7 +122,7 @@ const Listbox = styled('ul')(({ theme }) => ({
     backgroundColor: '#f0f0f0',
     cursor: 'pointer',
   },
-}));
+}))
 
 function CustomAutocomplete({ value, onChange }) {
   const {
@@ -153,6 +153,10 @@ function CustomAutocomplete({ value, onChange }) {
     onChange(newValue);
   };
 
+  const handleClearAll = () => {
+    onChange([]); // Vide tous les éléments
+  };
+
   return (
     <Root>
       <div {...getRootProps()}>
@@ -171,10 +175,28 @@ function CustomAutocomplete({ value, onChange }) {
           <input {...getInputProps()} placeholder="Selectionnez les partitions à supprimer" />
         </InputWrapper>
       </div>
+
+      {/* Bouton en dehors de l'autocomplete */}
+      {value.length > 0 && (
+        <button
+          style={{
+            marginTop: '10px',
+            border: 'none',
+            background: '#ff4d4f',
+            color: '#fff',
+            borderRadius: '4px',
+            padding: '6px 12px',
+            cursor: 'pointer',
+          }}
+          onClick={handleClearAll}
+        >
+         Effacer les valeurs selectionnées
+        </button>
+      )}
+
       {groupedOptions.length > 0 && focused ? (
         <Listbox {...getListboxProps()}>
           {groupedOptions.map((option, index) => {
-            // Vérifier si c'est un en-tête de groupe (string)
             if (typeof option === 'string') {
               return (
                 <li key={`group-${option}`} className="group-header">
@@ -182,13 +204,11 @@ function CustomAutocomplete({ value, onChange }) {
                 </li>
               );
             }
-            
-            // Vérifier que l'option est valide
+
             if (!option || !option.disque || !option.type || option.taille === undefined) {
               return null;
             }
-            
-            // C'est un élément normal
+
             const { key, ...optionProps } = getOptionProps({ option, index });
             return (
               <li key={key || `option-${option.id}`} {...optionProps}>
@@ -202,5 +222,6 @@ function CustomAutocomplete({ value, onChange }) {
     </Root>
   );
 }
+
 
 export default CustomAutocomplete;
