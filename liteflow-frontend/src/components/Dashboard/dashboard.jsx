@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import SystemInfo from "./systeminfo-chart";
+import SystemInfo from "./systeminfo";
 import CPUChart from "./cpu-chart";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import NetworkAreaChart from "./network";
+import NetworkAreaChart from "./network-chart";
 import DiskUsageChart from "./disk-chart";
 import MemoryUsageChart from "./memory-chart";
 
