@@ -9,25 +9,21 @@ import TextField from '@mui/material/TextField';
 import './commandes-optimisation.css';
 import CustomDataGrid from '../CustomDataGrid/custom-datagrid.jsx';
 import * as XLSX from 'xlsx';
-import { fetchCommandes } from '../../services/Commandes/commandesService.js';
-import { ajouterCommande } from '../../services/Commandes/commandesService.js';
+import { fetchCommandes, ajouterCommande, supprimerCommande } from '../../services/Commandes/commandesService.js';
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'commande', headerName: 'Nom de la commande', width: 200 },
-  { field: 'description', headerName: 'Description de la commande', width: 600 }
+const baseColumns = [
+  { field: 'id', headerName: 'ID', width: 100 },
+  { field: 'commande', headerName: 'Commande', width: 150 },
+  { field: 'description', headerName: 'Description', width: 300 }
 ];
 
 function CommandesOptimisation() {
   const location = useLocation();
   const typeFromState = location.state?.type || 'Powershell';
   const [value, setValue] = React.useState(typeFromState === 'Powershell' ? 0 : 1);
-  const [valueModal, setValueModal] = React.useState(typeFromState === 'Powershell' ? 0 : 1);
 
   const [commandeText, setCommandeText] = React.useState('');
   const [descriptionText, setDescriptionText] = React.useState('');
-
-
 
   const [rowsPowershell, setRowsPowershell] = React.useState([]);
   const [rowsBash, setRowsBash] = React.useState([]);
@@ -41,19 +37,16 @@ function CommandesOptimisation() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // Charger les commandes au montage
   React.useEffect(() => {
     async function loadCommandes() {
       try {
         const bashData = await fetchCommandes('bash');
         const powershellData = await fetchCommandes('powershell');
 
-        console.log('bashData',bashData)
-
-        console.log('powershellData',powershellData)
-
         setRowsBash(
           bashData.map((cmd, index) => ({
-            id: index + 1,
+            id: cmd.id,
             commande: cmd.commande,
             description: cmd.description
           }))
@@ -61,13 +54,11 @@ function CommandesOptimisation() {
 
         setRowsPowershell(
           powershellData.map((cmd, index) => ({
-            id: index + 1,
+            id: cmd.id,
             commande: cmd.commande,
             description: cmd.description
           }))
         );
-
-
       } catch (error) {
         console.error('Erreur chargement commandes', error);
       }
@@ -76,9 +67,7 @@ function CommandesOptimisation() {
     loadCommandes();
   }, []);
 
-  // ========================
   // Export Excel
-  // ========================
   const handleClickDownload = (type) => {
     let selectedRows = type === 'Powershell' ? selectedRowsPowershell : selectedRowsBash;
     if (!selectedRows.length) {
@@ -92,9 +81,7 @@ function CommandesOptimisation() {
     XLSX.writeFile(wb, `commandes_${type.toLowerCase()}.xlsx`);
   };
 
-  // ========================
   // Gestion des sélections
-  // ========================
   const handleSelectionChangePowershell = (ids, rows) => {
     setSelectedIdsPowershell(ids);
     setSelectedRowsPowershell(rows);
@@ -108,44 +95,82 @@ function CommandesOptimisation() {
   const handleChange = (event, newValue) => setValue(newValue);
 
   const handleChangeModal = (event, newValue) => {
-    setValueModal(newValue);
+    setValue(newValue);
     setCommandeText('');
     setDescriptionText('');
   };
 
-   const handleSubmit = async () => {
-  const type = valueModal === 0 ? 'powershell' : 'bash';
+  // Ajouter une commande
+  const handleSubmit = async () => {
+    const type = value === 0 ? 'powershell' : 'bash';
+    try {
+      let id = (type === 'bash' ? rowsBash.length : rowsPowershell.length) + 1;
+      await ajouterCommande(type, id, commandeText, descriptionText);
 
-  try {
-    await ajouterCommande(type, commandeText, descriptionText);
+      // Mettre à jour les lignes
+      const commandes = await fetchCommandes(type);
+      if (type === 'powershell') {
+        setRowsPowershell(
+          commandes.map((cmd, index) => ({
+            id: index + 1,
+            commande: cmd.commande,
+            description: cmd.description
+          }))
+        );
+      } else {
+        setRowsBash(
+          commandes.map((cmd, index) => ({
+            id: index + 1,
+            commande: cmd.commande,
+            description: cmd.description
+          }))
+        );
+      }
 
-    // Mettre à jour les lignes du tableau après ajout
-    const commandes = await fetchCommandes(type);
-    if (type === 'powershell') {
-      setRowsPowershell(
-        commandes.map((cmd, index) => ({
-          id: index + 1,
-          commande: cmd.commande,
-          description: cmd.description
-        }))
-      );
-    } else {
-      setRowsBash(
-        commandes.map((cmd, index) => ({
-          id: index + 1,
-          commande: cmd.commande,
-          description: cmd.description
-        }))
-      );
+      handleClose();
+      setCommandeText('');
+      setDescriptionText('');
+    } catch (error) {
+      console.error('Erreur ajout commande:', error);
     }
+  };
 
-    handleClose(); // fermer la modal
-  } catch (error) {
-    console.error('Erreur ajout commande:', error);
-  }
-};
+  // Supprimer une ligne
+  const handleDeleteRow = async (row) => {
+    try {
+      const type = value === 0 ? 'powershell' : 'bash';
 
+      supprimerCommande(type,row.id);
 
+      // Supprimer côté client
+      if (type === 'powershell') {
+        setRowsPowershell((prev) => prev.filter((r) => r.id !== row.id));
+      } else {
+        setRowsBash((prev) => prev.filter((r) => r.id !== row.id));
+      }
+    } catch (error) {
+      console.error('Erreur suppression commande:', error);
+    }
+  };
+
+  // Colonnes avec bouton Supprimer
+  const columnsWithDelete = [
+    ...baseColumns,
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => handleDeleteRow(params.row)}
+        >
+          Supprimer
+        </Button>
+      ),
+    },
+  ];
 
   const handleBack = () => window.history.back();
 
@@ -172,44 +197,40 @@ function CommandesOptimisation() {
 
       <Button variant="outlined" onClick={handleOpen}>Ajouter une commande</Button>
       <Modal open={open} onClose={handleClose}>
-          <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-          }}>
-            {/* Onglets Powershell / Bash */}
-            <Tabs value={valueModal} onChange={handleChangeModal}>
-              <Tab label="Commande Powershell" />
-              <Tab label="Commande Bash" />
-            </Tabs>
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          p: 4,
+        }}>
+          <Tabs value={value} onChange={handleChangeModal}>
+            <Tab label="Commande Powershell" />
+            <Tab label="Commande Bash" />
+          </Tabs>
 
-            {/* Formulaire */}
-            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                label="Commande"
-                value={commandeText}
-                onChange={(e) => setCommandeText(e.target.value)}
-              />
-              <TextField
-                label="Description"
-                value={descriptionText}
-                onChange={(e) => setDescriptionText(e.target.value)}
-              />
+          <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              label="Commande"
+              value={commandeText}
+              onChange={(e) => setCommandeText(e.target.value)}
+            />
+            <TextField
+              label="Description"
+              value={descriptionText}
+              onChange={(e) => setDescriptionText(e.target.value)}
+            />
 
-              <Button variant="contained" onClick={handleSubmit}>
-                Ajouter
-              </Button>
-            </Box>
+            <Button variant="contained" onClick={handleSubmit}>
+              Ajouter
+            </Button>
           </Box>
-        </Modal>
-  
-
+        </Box>
+      </Modal>
 
       <Tabs value={value} onChange={handleChange}>
         <Tab label="Powershell" />
@@ -220,7 +241,7 @@ function CommandesOptimisation() {
         {value === 0 && (
           <CustomDataGrid
             rows={rowsPowershell}
-            columns={columns}
+            columns={columnsWithDelete}
             onSelectionChange={handleSelectionChangePowershell}
             pageSize={10}
             pageSizeOptions={[5, 10, 25, 50, 100]}
@@ -230,7 +251,7 @@ function CommandesOptimisation() {
         {value === 1 && (
           <CustomDataGrid
             rows={rowsBash}
-            columns={columns}
+            columns={columnsWithDelete}
             onSelectionChange={handleSelectionChangeBash}
             pageSize={10}
             pageSizeOptions={[5, 10, 25, 50, 100]}

@@ -190,7 +190,7 @@ function CustomAutocomplete({ value, onChange }) {
           }}
           onClick={handleClearAll}
         >
-         Effacer les valeurs selectionnées
+         Effacer les {value.length} valeurs selectionnées
         </button>
       )}
 

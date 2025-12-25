@@ -159,7 +159,6 @@ const handleClickDownload = () => {
 
   return (
     <div className='nettoyage-disque-container'>
-      <h4>{selectedPartitions.length} partitions à supprimer</h4>
       <div className='header-nettoyage-disque'>
         <div className="container-autocomplete-nettoyage-disque">
             <CustomAutocomplete
