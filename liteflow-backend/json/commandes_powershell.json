@@ -1,7 +1,1107 @@
 [
   {
     "id": 1,
-    "commande": "rezdzde",
-    "description": "dez"
-  }
+    "commande": "Get-AppxPackage -AllUsers | Where-Object {$_.NonRemovable -eq $false} | Remove-AppxPackage",
+    "description": "Supprime les applications préinstallées inutiles (bloatware) de Windows"
+  },
+  {
+    "id": 2,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol",
+    "description": "Désactive le protocole SMB1 obsolète pour améliorer la sécurité et les performances"
+  },
+  {
+    "id": 3,
+    "commande": "Set-Service -Name 'SysMain' -StartupType Disabled; Stop-Service -Name 'SysMain' -Force",
+    "description": "Désactive le service Superfetch/SysMain (utile pour les SSD)"
+  },
+  {
+    "id": 4,
+    "commande": "Set-Service -Name 'DiagTrack' -StartupType Disabled; Stop-Service -Name 'DiagTrack' -Force",
+    "description": "Désactive le service de télémétrie et de diagnostic de Windows"
+  },
+  {
+    "id": 5,
+    "commande": "Set-Service -Name 'WSearch' -StartupType Disabled; Stop-Service -Name 'WSearch' -Force",
+    "description": "Désactive l'indexation Windows Search (libère ressources CPU/disque)"
+  },
+  {
+    "id": 6,
+    "commande": "Optimize-Volume -DriveLetter C -Defragment -Verbose",
+    "description": "Défragmente le disque C (HDD uniquement, pas SSD)"
+  },
+  {
+    "id": 7,
+    "commande": "Optimize-Volume -DriveLetter C -ReTrim -Verbose",
+    "description": "Exécute la commande TRIM sur le SSD pour optimiser les performances"
+  },
+  {
+    "id": 8,
+    "commande": "Clear-RecycleBin -Force",
+    "description": "Vide la corbeille pour libérer de l'espace disque"
+  },
+  {
+    "id": 9,
+    "commande": "Remove-Item -Path \"$env:TEMP\\*\" -Recurse -Force -ErrorAction SilentlyContinue",
+    "description": "Supprime tous les fichiers temporaires de l'utilisateur"
+  },
+  {
+    "id": 10,
+    "commande": "Remove-Item -Path 'C:\\Windows\\Temp\\*' -Recurse -Force -ErrorAction SilentlyContinue",
+    "description": "Supprime tous les fichiers temporaires système"
+  },
+  {
+    "id": 11,
+    "commande": "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase",
+    "description": "Nettoie les anciens fichiers de mise à jour Windows (libère beaucoup d'espace)"
+  },
+  {
+    "id": 12,
+    "commande": "Set-Service -Name 'wuauserv' -StartupType Manual",
+    "description": "Définit Windows Update en démarrage manuel pour contrôler les mises à jour"
+  },
+  {
+    "id": 13,
+    "commande": "Disable-MMAgent -MemoryCompression",
+    "description": "Désactive la compression mémoire (peut améliorer les performances sur certains systèmes)"
+  },
+  {
+    "id": 14,
+    "commande": "Disable-MMAgent -PageCombining",
+    "description": "Désactive la combinaison de pages mémoire"
+  },
+  {
+    "id": 15,
+    "commande": "powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c",
+    "description": "Active le mode de performances élevées"
+  },
+  {
+    "id": 16,
+    "commande": "powercfg /hibernate off",
+    "description": "Désactive l'hibernation et supprime hiberfil.sys (libère plusieurs Go)"
+  },
+  {
+    "id": 17,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'ClearPageFileAtShutdown' -Value 1",
+    "description": "Vide le fichier de pagination à l'arrêt pour un démarrage plus propre"
+  },
+  {
+    "id": 18,
+    "commande": "Disable-NetAdapterBinding -Name '*' -ComponentID ms_tcpip6",
+    "description": "Désactive IPv6 sur toutes les cartes réseau (peut accélérer la connexion)"
+  },
+  {
+    "id": 19,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer' -Name 'SmartScreenEnabled' -Value 'Off'",
+    "description": "Désactive SmartScreen (améliore performances, réduit sécurité)"
+  },
+  {
+    "id": 20,
+    "commande": "bcdedit /set disabledynamictick yes",
+    "description": "Désactive le timer dynamique pour améliorer les performances gaming"
+  },
+  {
+    "id": 21,
+    "commande": "bcdedit /set useplatformclock no",
+    "description": "Désactive l'horloge plateforme pour de meilleures performances"
+  },
+  {
+    "id": 22,
+    "commande": "Set-Service -Name 'XblAuthManager' -StartupType Disabled; Stop-Service -Name 'XblAuthManager' -Force",
+    "description": "Désactive le gestionnaire d'authentification Xbox Live"
+  },
+  {
+    "id": 23,
+    "commande": "Set-Service -Name 'XblGameSave' -StartupType Disabled; Stop-Service -Name 'XblGameSave' -Force",
+    "description": "Désactive le service de sauvegarde de jeux Xbox"
+  },
+  {
+    "id": 24,
+    "commande": "Set-Service -Name 'XboxNetApiSvc' -StartupType Disabled; Stop-Service -Name 'XboxNetApiSvc' -Force",
+    "description": "Désactive le service réseau Xbox"
+  },
+  {
+    "id": 25,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser'",
+    "description": "Désactive la tâche de télémétrie de compatibilité"
+  },
+  {
+    "id": 26,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator'",
+    "description": "Désactive la collecte de données d'amélioration de l'expérience client"
+  },
+  {
+    "id": 27,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Defrag\\ScheduledDefrag'",
+    "description": "Désactive la défragmentation planifiée automatique"
+  },
+  {
+    "id": 28,
+    "commande": "Get-Service | Where-Object {$_.StartType -eq 'Automatic' -and $_.Status -eq 'Stopped'} | Start-Service",
+    "description": "Démarre tous les services automatiques qui sont arrêtés"
+  },
+  {
+    "id": 29,
+    "commande": "Get-Process | Sort-Object -Property CPU -Descending | Select-Object -First 10",
+    "description": "Affiche les 10 processus utilisant le plus de CPU pour identifier les gourmands"
+  },
+  {
+    "id": 30,
+    "commande": "Get-Process | Sort-Object -Property WS -Descending | Select-Object -First 10",
+    "description": "Affiche les 10 processus utilisant le plus de RAM"
+  },
+  {
+    "id": 31,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ListviewAlphaSelect' -Value 0",
+    "description": "Désactive la sélection alpha dans l'explorateur pour améliorer la réactivité"
+  },
+  {
+    "id": 32,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarAnimations' -Value 0",
+    "description": "Désactive les animations de la barre des tâches"
+  },
+  {
+    "id": 33,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'MenuShowDelay' -Value 0",
+    "description": "Réduit le délai d'affichage des menus à zéro"
+  },
+  {
+    "id": 34,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop\\WindowMetrics' -Name 'MinAnimate' -Value 0",
+    "description": "Désactive l'animation de minimisation/maximisation des fenêtres"
+  },
+  {
+    "id": 35,
+    "commande": "Disable-ComputerRestore -Drive 'C:\\'",
+    "description": "Désactive la restauration système sur le disque C (libère de l'espace)"
+  },
+  {
+    "id": 36,
+    "commande": "vssadmin delete shadows /all /quiet",
+    "description": "Supprime tous les points de restauration pour libérer de l'espace"
+  },
+  {
+    "id": 37,
+    "commande": "Set-NetTCPSetting -SettingName Internet -AutoTuningLevelLocal Normal",
+    "description": "Optimise les paramètres TCP pour de meilleures performances réseau"
+  },
+  {
+    "id": 38,
+    "commande": "netsh int tcp set global autotuninglevel=normal",
+    "description": "Active l'ajustement automatique de la fenêtre TCP"
+  },
+  {
+    "id": 39,
+    "commande": "netsh int tcp set global chimney=enabled",
+    "description": "Active le déchargement TCP Chimney"
+  },
+  {
+    "id": 40,
+    "commande": "netsh int tcp set global dca=enabled",
+    "description": "Active Direct Cache Access pour améliorer les performances réseau"
+  },
+  {
+    "id": 41,
+    "commande": "netsh int tcp set global netdma=enabled",
+    "description": "Active NetDMA pour de meilleures performances réseau"
+  },
+  {
+    "id": 42,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'TcpTimedWaitDelay' -Value 30",
+    "description": "Réduit le délai TIME_WAIT TCP pour libérer les ports plus rapidement"
+  },
+  {
+    "id": 43,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name 'NtfsDisableLastAccessUpdate' -Value 1",
+    "description": "Désactive la mise à jour du dernier accès NTFS (améliore performances disque)"
+  },
+  {
+    "id": 44,
+    "commande": "fsutil behavior set disabledeletenotify 0",
+    "description": "Active TRIM pour les SSD"
+  },
+  {
+    "id": 45,
+    "commande": "Set-Service -Name 'MapsBroker' -StartupType Disabled; Stop-Service -Name 'MapsBroker' -Force",
+    "description": "Désactive le gestionnaire de cartes téléchargées"
+  },
+  {
+    "id": 45,
+    "commande": "Set-Service -Name 'MapsBroker' -StartupType Disabled; Stop-Service -Name 'MapsBroker' -Force",
+    "description": "Désactive le gestionnaire de cartes téléchargées"
+  },
+  {
+    "id": 46,
+    "commande": "Set-Service -Name 'lfsvc' -StartupType Disabled; Stop-Service -Name 'lfsvc' -Force",
+    "description": "Désactive le service de géolocalisation"
+  },
+  {
+    "id": 47,
+    "commande": "Set-Service -Name 'RetailDemo' -StartupType Disabled; Stop-Service -Name 'RetailDemo' -Force",
+    "description": "Désactive le service de démonstration en magasin"
+  },
+  {
+    "id": 48,
+    "commande": "Set-Service -Name 'TabletInputService' -StartupType Disabled; Stop-Service -Name 'TabletInputService' -Force",
+    "description": "Désactive le service d'entrée tablette (si pas d'écran tactile)"
+  },
+  {
+    "id": 49,
+    "commande": "Set-Service -Name 'WerSvc' -StartupType Disabled; Stop-Service -Name 'WerSvc' -Force",
+    "description": "Désactive le service de rapport d'erreurs Windows"
+  },
+  {
+    "id": 50,
+    "commande": "Set-Service -Name 'Fax' -StartupType Disabled; Stop-Service -Name 'Fax' -Force",
+    "description": "Désactive le service de fax (si non utilisé)"
+  },
+  {
+    "id": 51,
+    "commande": "Set-Service -Name 'dmwappushservice' -StartupType Disabled; Stop-Service -Name 'dmwappushservice' -Force",
+    "description": "Désactive le service de routage de messages push WAP"
+  },
+  {
+    "id": 52,
+    "commande": "Set-Service -Name 'PcaSvc' -StartupType Disabled; Stop-Service -Name 'PcaSvc' -Force",
+    "description": "Désactive l'Assistant Compatibilité des programmes"
+  },
+  {
+    "id": 53,
+    "commande": "Set-Service -Name 'RemoteRegistry' -StartupType Disabled; Stop-Service -Name 'RemoteRegistry' -Force",
+    "description": "Désactive le service Registre à distance (sécurité)"
+  },
+  {
+    "id": 54,
+    "commande": "Set-Service -Name 'RemoteAccess' -StartupType Disabled; Stop-Service -Name 'RemoteAccess' -Force",
+    "description": "Désactive le service d'accès à distance"
+  },
+  {
+    "id": 55,
+    "commande": "Set-Service -Name 'WbioSrvc' -StartupType Disabled; Stop-Service -Name 'WbioSrvc' -Force",
+    "description": "Désactive le service biométrique Windows (si non utilisé)"
+  },
+  {
+    "id": 56,
+    "commande": "Set-Service -Name 'WMPNetworkSvc' -StartupType Disabled; Stop-Service -Name 'WMPNetworkSvc' -Force",
+    "description": "Désactive le service de partage réseau du Lecteur Windows Media"
+  },
+  {
+    "id": 57,
+    "commande": "Set-Service -Name 'HomeGroupListener' -StartupType Disabled; Stop-Service -Name 'HomeGroupListener' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive l'écouteur du Groupe résidentiel"
+  },
+  {
+    "id": 58,
+    "commande": "Set-Service -Name 'HomeGroupProvider' -StartupType Disabled; Stop-Service -Name 'HomeGroupProvider' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive le fournisseur du Groupe résidentiel"
+  },
+  {
+    "id": 59,
+    "commande": "Set-Service -Name 'PhoneSvc' -StartupType Disabled; Stop-Service -Name 'PhoneSvc' -Force",
+    "description": "Désactive le service téléphonique"
+  },
+  {
+    "id": 60,
+    "commande": "Set-Service -Name 'PrintNotify' -StartupType Disabled; Stop-Service -Name 'PrintNotify' -Force",
+    "description": "Désactive les notifications d'impression (si pas d'imprimante)"
+  },
+  {
+    "id": 61,
+    "commande": "Set-Service -Name 'Spooler' -StartupType Disabled; Stop-Service -Name 'Spooler' -Force",
+    "description": "Désactive le spouleur d'impression (si pas d'imprimante)"
+  },
+  {
+    "id": 62,
+    "commande": "Set-Service -Name 'WpcMonSvc' -StartupType Disabled; Stop-Service -Name 'WpcMonSvc' -Force",
+    "description": "Désactive le contrôle parental"
+  },
+  {
+    "id": 63,
+    "commande": "Set-Service -Name 'SEMgrSvc' -StartupType Disabled; Stop-Service -Name 'SEMgrSvc' -Force",
+    "description": "Désactive le gestionnaire des paiements et NFC/SE"
+  },
+  {
+    "id": 64,
+    "commande": "Set-Service -Name 'SCardSvr' -StartupType Disabled; Stop-Service -Name 'SCardSvr' -Force",
+    "description": "Désactive le service de carte à puce"
+  },
+  {
+    "id": 65,
+    "commande": "Set-Service -Name 'ScDeviceEnum' -StartupType Disabled; Stop-Service -Name 'ScDeviceEnum' -Force",
+    "description": "Désactive l'énumération de périphériques de carte à puce"
+  },
+  {
+    "id": 66,
+    "commande": "Set-Service -Name 'SCPolicySvc' -StartupType Disabled; Stop-Service -Name 'SCPolicySvc' -Force",
+    "description": "Désactive la stratégie de retrait de carte à puce"
+  },
+  {
+    "id": 67,
+    "commande": "Set-Service -Name 'BDESVC' -StartupType Disabled; Stop-Service -Name 'BDESVC' -Force",
+    "description": "Désactive BitLocker (si non utilisé)"
+  },
+  {
+    "id": 68,
+    "commande": "Set-Service -Name 'vmickvpexchange' -StartupType Disabled; Stop-Service -Name 'vmickvpexchange' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive l'échange de données Hyper-V"
+  },
+  {
+    "id": 69,
+    "commande": "Set-Service -Name 'vmicguestinterface' -StartupType Disabled; Stop-Service -Name 'vmicguestinterface' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive l'interface invité Hyper-V"
+  },
+  {
+    "id": 70,
+    "commande": "Set-Service -Name 'vmicshutdown' -StartupType Disabled; Stop-Service -Name 'vmicshutdown' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive le service d'arrêt invité Hyper-V"
+  },
+  {
+    "id": 71,
+    "commande": "Set-Service -Name 'vmicheartbeat' -StartupType Disabled; Stop-Service -Name 'vmicheartbeat' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive le service de pulsation Hyper-V"
+  },
+  {
+    "id": 72,
+    "commande": "Set-Service -Name 'vmicvss' -StartupType Disabled; Stop-Service -Name 'vmicvss' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive le service VSS invité Hyper-V"
+  },
+  {
+    "id": 73,
+    "commande": "Set-Service -Name 'vmictimesync' -StartupType Disabled; Stop-Service -Name 'vmictimesync' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive la synchronisation de l'heure Hyper-V"
+  },
+  {
+    "id": 74,
+    "commande": "Set-Service -Name 'vmicrdv' -StartupType Disabled; Stop-Service -Name 'vmicrdv' -Force -ErrorAction SilentlyContinue",
+    "description": "Désactive la virtualisation des périphériques Hyper-V"
+  },
+  {
+    "id": 75,
+    "commande": "Set-Service -Name 'SharedAccess' -StartupType Disabled; Stop-Service -Name 'SharedAccess' -Force",
+    "description": "Désactive le partage de connexion Internet (ICS)"
+  },
+  {
+    "id": 76,
+    "commande": "Set-Service -Name 'WbEngSvc' -StartupType Disabled; Stop-Service -Name 'WbEngSvc' -Force",
+    "description": "Désactive le service de moteur de sauvegarde Windows"
+  },
+  {
+    "id": 77,
+    "commande": "Set-Service -Name 'SDRSVC' -StartupType Disabled; Stop-Service -Name 'SDRSVC' -Force",
+    "description": "Désactive la sauvegarde Windows"
+  },
+  {
+    "id": 78,
+    "commande": "Set-Service -Name 'SstpSvc' -StartupType Disabled; Stop-Service -Name 'SstpSvc' -Force",
+    "description": "Désactive le service SSTP (VPN)"
+  },
+  {
+    "id": 79,
+    "commande": "Set-Service -Name 'TapiSrv' -StartupType Disabled; Stop-Service -Name 'TapiSrv' -Force",
+    "description": "Désactive la téléphonie (TAPI)"
+  },
+  {
+    "id": 80,
+    "commande": "Set-Service -Name 'TermService' -StartupType Disabled; Stop-Service -Name 'TermService' -Force",
+    "description": "Désactive les services Bureau à distance"
+  },
+  {
+    "id": 81,
+    "commande": "Set-Service -Name 'UmRdpService' -StartupType Disabled; Stop-Service -Name 'UmRdpService' -Force",
+    "description": "Désactive le redirecteur de port du mode utilisateur des services Bureau à distance"
+  },
+  {
+    "id": 82,
+    "commande": "Set-Service -Name 'SessionEnv' -StartupType Disabled; Stop-Service -Name 'SessionEnv' -Force",
+    "description": "Désactive la configuration des services Bureau à distance"
+  },
+  {
+    "id": 83,
+    "commande": "Set-Service -Name 'SENS' -StartupType Manual",
+    "description": "Met le service de notification d'événements système en manuel"
+  },
+  {
+    "id": 84,
+    "commande": "Set-Service -Name 'Themes' -StartupType Disabled; Stop-Service -Name 'Themes' -Force",
+    "description": "Désactive les thèmes Windows (apparence basique)"
+  },
+  {
+    "id": 85,
+    "commande": "Set-Service -Name 'BthHFSrv' -StartupType Disabled; Stop-Service -Name 'BthHFSrv' -Force",
+    "description": "Désactive le service de prise en charge Bluetooth (si pas de BT)"
+  },
+  {
+    "id": 86,
+    "commande": "Set-Service -Name 'bthserv' -StartupType Disabled; Stop-Service -Name 'bthserv' -Force",
+    "description": "Désactive le service de prise en charge Bluetooth"
+  },
+  {
+    "id": 87,
+    "commande": "Set-Service -Name 'NaturalAuthentication' -StartupType Disabled; Stop-Service -Name 'NaturalAuthentication' -Force",
+    "description": "Désactive l'authentification naturelle"
+  },
+  {
+    "id": 88,
+    "commande": "Set-Service -Name 'NetTcpPortSharing' -StartupType Disabled; Stop-Service -Name 'NetTcpPortSharing' -Force",
+    "description": "Désactive le service de partage de port Net.Tcp"
+  },
+  {
+    "id": 89,
+    "commande": "Set-Service -Name 'wisvc' -StartupType Disabled; Stop-Service -Name 'wisvc' -Force",
+    "description": "Désactive Windows Insider Service"
+  },
+  {
+    "id": 90,
+    "commande": "Set-Service -Name 'icssvc' -StartupType Disabled; Stop-Service -Name 'icssvc' -Force",
+    "description": "Désactive le service de point d'accès sans fil mobile Windows"
+  },
+  {
+    "id": 91,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Application Experience\\ProgramDataUpdater'",
+    "description": "Désactive la mise à jour des données de programme"
+  },
+  {
+    "id": 92,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Application Experience\\StartupAppTask'",
+    "description": "Désactive la tâche d'application de démarrage"
+  },
+  {
+    "id": 93,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Autochk\\Proxy'",
+    "description": "Désactive le proxy Autochk"
+  },
+  {
+    "id": 94,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector'",
+    "description": "Désactive le collecteur de données de diagnostic de disque"
+  },
+  {
+    "id": 95,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Maintenance\\WinSAT'",
+    "description": "Désactive l'évaluation des performances Windows (WinSAT)"
+  },
+  {
+    "id": 96,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Windows Error Reporting\\QueueReporting'",
+    "description": "Désactive le rapport d'erreurs en file d'attente"
+  },
+  {
+    "id": 97,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\WindowsUpdate\\Automatic App Update'",
+    "description": "Désactive la mise à jour automatique des applications"
+  },
+  {
+    "id": 98,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\PI\\Sqm-Tasks'",
+    "description": "Désactive les tâches SQM (Customer Experience)"
+  },
+  {
+    "id": 99,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\AppID\\SmartScreenSpecific'",
+    "description": "Désactive les tâches SmartScreen spécifiques"
+  },
+  {
+    "id": 100,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\CloudExperienceHost\\CreateObjectTask'",
+    "description": "Désactive la création d'objets Cloud Experience"
+  },
+  {
+    "id": 101,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoUpdate' -Value 1",
+    "description": "Désactive les mises à jour automatiques Windows"
+  },
+  {
+    "id": 102,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'EnableLUA' -Value 0",
+    "description": "Désactive le contrôle de compte d'utilisateur (UAC) - DANGEREUX"
+  },
+  {
+    "id": 103,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters' -Name 'IRPStackSize' -Value 32",
+    "description": "Augmente la taille de la pile IRP pour améliorer les performances réseau"
+  },
+  {
+    "id": 104,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'LargeSystemCache' -Value 1",
+    "description": "Active le cache système large (bon pour serveurs)"
+  },
+  {
+    "id": 105,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'DisablePagingExecutive' -Value 1",
+    "description": "Empêche Windows de paginer les pilotes (nécessite beaucoup de RAM)"
+  },
+  {
+    "id": 106,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'SecondLevelDataCache' -Value 512",
+    "description": "Définit la taille du cache L2 du processeur"
+  },
+  {
+    "id": 107,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'DefaultTTL' -Value 64",
+    "description": "Définit le TTL par défaut pour les paquets TCP/IP"
+  },
+  {
+    "id": 108,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'MaxUserPort' -Value 65534",
+    "description": "Augmente le nombre maximum de ports utilisateur"
+  },
+  {
+    "id": 109,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'TcpMaxDataRetransmissions' -Value 3",
+    "description": "Réduit le nombre de retransmissions TCP"
+  },
+  {
+    "id": 110,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'EnablePMTUDiscovery' -Value 1",
+    "description": "Active la découverte MTU du chemin"
+  },
+  {
+    "id": 111,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile' -Name 'SystemResponsiveness' -Value 0",
+    "description": "Alloue plus de ressources aux applications (0-100, 0=max perf)"
+  },
+  {
+    "id": 112,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile' -Name 'NetworkThrottlingIndex' -Value 0xffffffff",
+    "description": "Désactive la limitation du réseau multimédia"
+  },
+  {
+    "id": 113,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games' -Name 'GPU Priority' -Value 8",
+    "description": "Définit la priorité GPU maximale pour les jeux"
+  },
+  {
+    "id": 114,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games' -Name 'Priority' -Value 6",
+    "description": "Définit la priorité CPU élevée pour les jeux"
+  },
+  {
+    "id": 115,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Multimedia\\SystemProfile\\Tasks\\Games' -Name 'Scheduling Category' -Value 'High'",
+    "description": "Définit la catégorie de planification haute pour les jeux"
+  },
+  {
+    "id": 116,
+    "commande": "powercfg /change monitor-timeout-ac 0",
+    "description": "Désactive la mise en veille de l'écran sur secteur"
+  },
+  {
+    "id": 117,
+    "commande": "powercfg /change disk-timeout-ac 0",
+    "description": "Désactive la mise en veille du disque sur secteur"
+  },
+  {
+    "id": 118,
+    "commande": "powercfg /change standby-timeout-ac 0",
+    "description": "Désactive la mise en veille sur secteur"
+  },
+  {
+    "id": 119,
+    "commande": "powercfg /setacvalueindex scheme_current sub_processor PERFBOOSTMODE 2",
+    "description": "Active le mode turbo agressif du processeur"
+  },
+  {
+    "id": 120,
+    "commande": "powercfg /setacvalueindex scheme_current sub_processor PERFBOOSTPOL 100",
+    "description": "Définit la politique de boost processeur à 100%"
+  },
+  {
+    "id": 121,
+    "commande": "powercfg /setacvalueindex scheme_current sub_processor CPMINCORES 100",
+    "description": "Force l'utilisation de tous les cœurs du processeur"
+  },
+  {
+    "id": 122,
+    "commande": "powercfg /setacvalueindex scheme_current sub_processor PROCTHROTTLEMIN 100",
+    "description": "Définit l'état minimum du processeur à 100%"
+  },
+  {
+    "id": 123,
+    "commande": "powercfg /setacvalueindex scheme_current sub_processor PROCTHROTTLEMAX 100",
+    "description": "Définit l'état maximum du processeur à 100%"
+  },
+  {
+    "id": 124,
+    "commande": "powercfg /setactive SCHEME_CURRENT",
+    "description": "Active les modifications de configuration d'alimentation"
+  },
+  {
+    "id": 125,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ShowSyncProviderNotifications' -Value 0",
+    "description": "Désactive les notifications du fournisseur de synchronisation"
+  },
+  {
+    "id": 126,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'HideFileExt' -Value 0",
+    "description": "Affiche les extensions de fichiers (utile, pas optimisation)"
+  },
+  {
+    "id": 127,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Hidden' -Value 1",
+    "description": "Affiche les fichiers cachés"
+  },
+  {
+    "id": 128,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ShowCompColor' -Value 1",
+    "description": "Active la couleur pour les fichiers compressés"
+  },
+  {
+    "id": 129,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Start_TrackProgs' -Value 0",
+    "description": "Désactive le suivi des programmes lancés"
+  },
+  {
+    "id": 130,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ServerAdminUI' -Value 0",
+    "description": "Désactive l'interface d'administration serveur"
+  },
+  {
+    "id": 131,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoLowDiskSpaceChecks' -Value 1",
+    "description": "Désactive les vérifications d'espace disque faible"
+  },
+  {
+    "id": 132,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'LinkResolveIgnoreLinkInfo' -Value 1",
+    "description": "Désactive la résolution automatique des raccourcis cassés"
+  },
+  {
+    "id": 133,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoResolveSearch' -Value 1",
+    "description": "Désactive la recherche automatique pour les raccourcis cassés"
+  },
+  {
+    "id": 134,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoResolveTrack' -Value 1",
+    "description": "Désactive le suivi des raccourcis cassés"
+  },
+  {
+    "id": 135,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name 'NoInternetOpenWith' -Value 1",
+    "description": "Désactive la recherche en ligne de programmes pour ouvrir les fichiers"
+  },
+  {
+    "id": 136,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'EnableActivityFeed' -Value 0",
+    "description": "Désactive le flux d'activités Windows"
+  },
+  {
+    "id": 137,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'PublishUserActivities' -Value 0",
+    "description": "Désactive la publication des activités utilisateur"
+  },
+  {
+    "id": 138,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System' -Name 'UploadUserActivities' -Value 0",
+    "description": "Désactive le téléchargement des activités utilisateur"
+  },
+  {
+    "id": 139,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AdvertisingInfo' -Name 'Enabled' -Value 0",
+    "description": "Désactive l'ID de publicité Windows"
+  },
+  {
+    "id": 140,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SystemPaneSuggestionsEnabled' -Value 0",
+    "description": "Désactive les suggestions dans le volet système"
+  },
+  {
+    "id": 141,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SoftLandingEnabled' -Value 0",
+    "description": "Désactive les suggestions d'applications Windows"
+  },
+  {
+    "id": 142,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SubscribedContent-338388Enabled' -Value 0",
+    "description": "Désactive les suggestions dans le menu Démarrer"
+  },
+  {
+    "id": 143,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SubscribedContent-338389Enabled' -Value 0",
+    "description": "Désactive les conseils et suggestions Windows"
+  },
+  {
+    "id": 144,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SubscribedContent-353698Enabled' -Value 0",
+    "description": "Désactive le contenu suggéré dans Paramètres"
+  },
+  {
+    "id": 145,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'PreInstalledAppsEnabled' -Value 0",
+    "description": "Désactive les applications préinstallées"
+  },
+  {
+    "id": 146,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'OemPreInstalledAppsEnabled' -Value 0",
+    "description": "Désactive les applications OEM préinstallées"
+  },
+  {
+    "id": 147,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SilentInstalledAppsEnabled' -Value 0",
+    "description": "Désactive l'installation silencieuse d'applications"
+  },
+  {
+    "id": 148,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\CloudContent' -Name 'DisableWindowsConsumerFeatures' -Value 1",
+    "description": "Désactive les fonctionnalités consommateur Windows"
+  },
+  {
+    "id": 149,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications' -Name 'GlobalUserDisabled' -Value 1",
+    "description": "Désactive l'exécution des applications en arrière-plan"
+  },
+  {
+    "id": 150,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\InputPersonalization' -Name 'RestrictImplicitInkCollection' -Value 1",
+    "description": "Restreint la collecte d'encre et de frappe"
+  },
+  {
+    "id": 151,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\InputPersonalization' -Name 'RestrictImplicitTextCollection' -Value 1",
+    "description": "Restreint la collecte de texte implicite"
+  },
+  {
+    "id": 152,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\InputPersonalization\\TrainedDataStore' -Name 'HarvestContacts' -Value 0",
+    "description": "Désactive la collecte des contacts"
+  },
+  {
+    "id": 153,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Personalization\\Settings' -Name 'AcceptedPrivacyPolicy' -Value 0",
+    "description": "Désactive la politique de confidentialité de personnalisation"
+  },
+  {
+    "id": 154,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection' -Name 'AllowTelemetry' -Value 0",
+    "description": "Désactive complètement la télémétrie Windows (peut nécessiter Entreprise)"
+  },
+  {
+    "id": 155,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'AllowTelemetry' -Value 0",
+    "description": "Désactive la télémétrie via les stratégies"
+  },
+  {
+    "id": 156,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer' -Name 'SmartScreenEnabled' -Value 'Off'",
+    "description": "Désactive SmartScreen pour l'explorateur"
+  },
+  {
+    "id": 157,
+    "commande": "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\AppHost' -Name 'EnableWebContentEvaluation' -Value 0",
+    "description": "Désactive l'évaluation du contenu web SmartScreen"
+  },
+  {
+    "id": 158,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments' -Name 'SaveZoneInformation' -Value 1",
+    "description": "Désactive l'information de zone pour les fichiers téléchargés"
+  },
+  {
+    "id": 159,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name 'LongPathsEnabled' -Value 1",
+    "description": "Active la prise en charge des chemins longs (>260 caractères)"
+  },
+  {
+    "id": 160,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name 'NtfsDisable8dot3NameCreation' -Value 1",
+    "description": "Désactive la création de noms courts 8.3 (améliore perf NTFS)"
+  },
+  {
+    "id": 161,
+    "commande": "fsutil behavior set disable8dot3 1",
+    "description": "Désactive les noms de fichiers 8.3 via fsutil"
+  },
+  {
+    "id": 162,
+    "commande": "fsutil behavior set encryptpagingfile 0",
+    "description": "Désactive le chiffrement du fichier de pagination"
+  },
+  {
+    "id": 163,
+    "commande": "fsutil behavior set memoryusage 2",
+    "description": "Augmente l'utilisation mémoire pour le cache système (2=max)"
+  },
+  {
+    "id": 164,
+    "commande": "fsutil behavior set mftzone 2",
+    "description": "Augmente l'espace réservé pour la MFT NTFS"
+  },
+  {
+    "id": 165,
+    "commande": "fsutil behavior set disablelastaccess 1",
+    "description": "Désactive la mise à jour de la date de dernier accès (perf)"
+  },
+  {
+    "id": 166,
+    "commande": "bcdedit /set bootmenupolicy legacy",
+    "description": "Active le menu de démarrage classique (plus rapide)"
+  },
+  {
+    "id": 167,
+    "commande": "bcdedit /timeout 3",
+    "description": "Réduit le délai du menu de démarrage à 3 secondes"
+  },
+  {
+    "id": 168,
+    "commande": "bcdedit /set nx OptOut",
+    "description": "Configure la prévention d'exécution des données en OptOut"
+  },
+  {
+    "id": 169,
+    "commande": "bcdedit /set bootux disabled",
+    "description": "Désactive l'interface graphique de démarrage"
+  },
+  {
+    "id": 170,
+    "commande": "bcdedit /set quietboot yes",
+    "description": "Active le mode démarrage silencieux"
+  },
+  {
+    "id": 171,
+    "commande": "bcdedit /set tpmbootentropy ForceDisable",
+    "description": "Désactive l'entropie de démarrage TPM"
+  },
+  {
+    "id": 172,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'Printing-PrintToPDFServices-Features' -NoRestart",
+    "description": "Désactive Microsoft Print to PDF"
+  },
+  {
+    "id": 173,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'Printing-XPSServices-Features' -NoRestart",
+    "description": "Désactive Microsoft XPS Document Writer"
+  },
+  {
+    "id": 174,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'WorkFolders-Client' -NoRestart",
+    "description": "Désactive les dossiers de travail"
+  },
+  {
+    "id": 175,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'MediaPlayback' -NoRestart",
+    "description": "Désactive le lecteur multimédia Windows"
+  },
+  {
+    "id": 176,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'WindowsMediaPlayer' -NoRestart",
+    "description": "Désactive Windows Media Player"
+  },
+  {
+    "id": 177,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'Internet-Explorer-Optional-amd64' -NoRestart",
+    "description": "Désactive Internet Explorer 11"
+  },
+  {
+    "id": 178,
+    "commande": "Disable-WindowsOptionalFeature -Online -FeatureName 'MicrosoftWindowsPowerShellV2Root' -NoRestart",
+    "description": "Désactive PowerShell 2.0 (obsolète)"
+  },
+  {
+    "id": 179,
+    "commande": "netsh advfirewall set allprofiles state off",
+    "description": "Désactive le pare-feu Windows (DANGEREUX - à éviter)"
+  },
+  {
+    "id": 180,
+    "commande": "netsh wlan set autoconfig enabled=no interface=\"Wi-Fi\"",
+    "description": "Désactive la configuration automatique WiFi"
+  },
+  {
+    "id": 181,
+    "commande": "netsh interface ipv4 set subinterface \"Ethernet\" mtu=1500 store=persistent",
+    "description": "Définit le MTU optimal pour Ethernet"
+  },
+  {
+    "id": 182,
+    "commande": "netsh int tcp set heuristics disabled",
+    "description": "Désactive les heuristiques de mise à l'échelle TCP"
+  },
+  {
+    "id": 183,
+    "commande": "netsh int tcp set global rss=enabled",
+    "description": "Active Receive Side Scaling pour le réseau"
+  },
+  {
+    "id": 184,
+    "commande": "netsh int tcp set global timestamps=disabled",
+    "description": "Désactive les horodatages TCP"
+  },
+  {
+    "id": 185,
+    "commande": "netsh int tcp set global ecncapability=disabled",
+    "description": "Désactive la notification explicite de congestion"
+  },
+  {
+    "id": 186,
+    "commande": "netsh int tcp set global initialRto=2000",
+    "description": "Définit le délai initial de retransmission à 2000ms"
+  },
+  {
+    "id": 187,
+    "commande": "netsh int tcp set global nonsackrttresiliency=disabled",
+    "description": "Désactive la résilience RTT non-SACK"
+  },
+  {
+    "id": 188,
+    "commande": "netsh int tcp set security mpp=disabled",
+    "description": "Désactive la protection des ports mappés"
+  },
+  {
+    "id": 189,
+    "commande": "netsh int tcp set security profiles=disabled",
+    "description": "Désactive les profils de sécurité TCP"
+  },
+  {
+    "id": 190,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' -Name 'TcpAckFrequency' -Value 1",
+    "description": "Réduit la latence réseau en envoyant des ACK plus fréquemment"
+  },
+  {
+    "id": 191,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' -Name 'TCPNoDelay' -Value 1",
+    "description": "Désactive l'algorithme de Nagle pour réduire la latence"
+  },
+  {
+    "id": 192,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\MSMQ\\Parameters' -Name 'TCPNoDelay' -Value 1",
+    "description": "Désactive l'algorithme de Nagle pour MSMQ"
+  },
+  {
+    "id": 193,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'DisableBandwidthThrottling' -Value 1",
+    "description": "Désactive la limitation de bande passante du redirecteur SMB"
+  },
+  {
+    "id": 194,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'DisableLargeMtu' -Value 0",
+    "description": "Active les grands MTU pour SMB"
+  },
+  {
+    "id": 195,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'FileInfoCacheLifetime' -Value 10",
+    "description": "Réduit la durée de vie du cache d'informations de fichiers"
+  },
+  {
+    "id": 196,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'FileNotFoundCacheLifetime' -Value 5",
+    "description": "Réduit la durée de vie du cache de fichiers non trouvés"
+  },
+  {
+    "id": 197,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters' -Name 'DirectoryCacheLifetime' -Value 10",
+    "description": "Réduit la durée de vie du cache de répertoires"
+  },
+  {
+    "id": 198,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\PriorityControl' -Name 'Win32PrioritySeparation' -Value 38",
+    "description": "Optimise la séparation des priorités pour les jeux (38=meilleur pour jeux)"
+  },
+  {
+    "id": 199,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'HwSchMode' -Value 2",
+    "description": "Active la planification GPU accélérée par matériel"
+  },
+  {
+    "id": 200,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'TdrDelay' -Value 60",
+    "description": "Augmente le délai de détection et récupération du timeout GPU"
+  },
+  {
+    "id": 201,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'TdrDdiDelay' -Value 60",
+    "description": "Augmente le délai DDI pour le timeout GPU"
+  },
+  {
+    "id": 202,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\dwm.exe\\PerfOptions' -Name 'CpuPriorityClass' -Value 3",
+    "description": "Définit la priorité CPU élevée pour Desktop Window Manager"
+  },
+  {
+    "id": 203,
+    "commande": "Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\csrss.exe\\PerfOptions' -Name 'CpuPriorityClass' -Value 4",
+    "description": "Définit la priorité CPU temps réel pour CSRSS"
+  },
+  {
+    "id": 204,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\DiskFootprint\\Diagnostics'",
+    "description": "Désactive les diagnostics d'empreinte disque"
+  },
+  {
+    "id": 205,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\MemoryDiagnostic\\ProcessMemoryDiagnosticEvents'",
+    "description": "Désactive les événements de diagnostic mémoire"
+  },
+  {
+    "id": 206,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\MemoryDiagnostic\\RunFullMemoryDiagnostic'",
+    "description": "Désactive le diagnostic mémoire complet"
+  },
+  {
+    "id": 207,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Power Efficiency Diagnostics\\AnalyzeSystem'",
+    "description": "Désactive l'analyse d'efficacité énergétique"
+  },
+  {
+    "id": 208,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Application Experience\\AitAgent'",
+    "description": "Désactive l'agent d'amélioration des applications"
+  },
+  {
+    "id": 209,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Shell\\FamilySafetyMonitor'",
+    "description": "Désactive le moniteur de sécurité familiale"
+  },
+  {
+    "id": 210,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Shell\\FamilySafetyRefreshTask'",
+    "description": "Désactive la tâche de rafraîchissement de sécurité familiale"
+  },
+  {
+    "id": 211,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Feedback\\Siuf\\DmClient'",
+    "description": "Désactive le client de feedback Windows"
+  },
+  {
+    "id": 212,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Feedback\\Siuf\\DmClientOnScenarioDownload'",
+    "description": "Désactive le téléchargement du client de feedback"
+  },
+  {
+    "id": 213,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Maps\\MapsUpdateTask'",
+    "description": "Désactive la mise à jour automatique des cartes"
+  },
+  {
+    "id": 214,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Maps\\MapsToastTask'",
+    "description": "Désactive les notifications des cartes"
+  },
+  {
+    "id": 215,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Mobile Broadband Accounts\\MNO Metadata Parser'",
+    "description": "Désactive l'analyseur de métadonnées MNO"
+  },
+  {
+    "id": 216,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\NetTrace\\GatherNetworkInfo'",
+    "description": "Désactive la collecte d'informations réseau"
+  },
+  {
+    "id": 217,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Offline Files\\Background Synchronization'",
+    "description": "Désactive la synchronisation en arrière-plan des fichiers hors connexion"
+  },
+  {
+    "id": 218,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Offline Files\\Logon Synchronization'",
+    "description": "Désactive la synchronisation à l'ouverture de session"
+  },
+  {
+    "id": 219,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Registry\\RegIdleBackup'",
+    "description": "Désactive la sauvegarde du registre au ralenti"
+  },
+{
+    "id": 220,
+    "commande": "Disable-ScheduledTask -TaskName 'Microsoft\\Windows\\Servicing\\StartComponentCleanup'",
+    "description": "Désactive la tâche planifiée 'StartComponentCleanup' de Windows pour le nettoyage des composants."
+}
 ]

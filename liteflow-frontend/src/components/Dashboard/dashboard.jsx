@@ -17,7 +17,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true; // pour éviter les mises à jour après démontage
+    let mounted = true;
 
     const loadDashboard = async () => {
       try {
