@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const config = require('./config/config');
 const apiRoutes = require('./routes/api');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 const app = express();
 
@@ -52,15 +54,10 @@ app.get('/', (req, res) => {
   });
 });
 
-// ====================================
-// Gestion des erreurs 404
-// ====================================
-app.use((req, res) => {
-  res.status(404).json({ 
-    error: 'Endpoint non trouvé',
-    path: req.path,
-  });
-});
+
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ====================================
 // Démarrage du serveur
@@ -69,6 +66,17 @@ app.listen(config.PORT, config.HOST, () => {
   console.log('\n ====================================');
   console.log('   LiteFlow Backend API démarré !');
   console.log('====================================');
+});
+
+
+// ====================================
+// Gestion des erreurs 404
+// ====================================
+app.use((req, res) => {
+  res.status(404).json({ 
+    error: 'Endpoint non trouvé',
+    path: req.path,
+  });
 });
 
 // ====================================

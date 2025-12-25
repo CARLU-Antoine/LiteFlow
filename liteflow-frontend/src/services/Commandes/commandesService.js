@@ -9,7 +9,7 @@ export async function fetchCommandes(type) {
   return json;
 }
 
-export async function ajouterCommande(type, commande,description) {
+export async function ajouterCommande(type, id, commande,description) {
 
   const response = await fetch('/api/ajouter-commandes', {
     method: 'POST',
@@ -18,9 +18,23 @@ export async function ajouterCommande(type, commande,description) {
     },
     body: JSON.stringify({
       typeOs:type,
+      id:id,
       cmd: commande,
       description:description
     })
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || `Erreur HTTP: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+export async function supprimerCommande(type, id) {
+  const response = await fetch(`/api/supprimer-commandes/${id}?typeOs=${encodeURIComponent(type)}`, {
+    method: 'DELETE'
   });
 
   if (!response.ok) {
