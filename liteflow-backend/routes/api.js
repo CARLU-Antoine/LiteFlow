@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
 const systemService = require('../services/systemService');
 const commandesService = require('../services/commandesService');
 
@@ -75,23 +74,19 @@ router.get('/processes', async (req, res) => {
  * @swagger
  * /commandes:
  *   get:
- *     summary: Liste des commandes
+ *     summary: Liste des commandes bash et powershell
  *     tags: [Commandes]
- *     parameters:
- *       - in: query
- *         name: typeOs
- *         schema:
- *           type: string
- *           enum: [bash, powershell]
  */
 router.get('/commandes', async (req, res) => {
   try {
-    const { typeOs } = req.query;
-    if (!typeOs) return res.status(400).json({ error: 'typeOs requis' });
+    const [commandeBash,commandePowershell] = await Promise.all([
+      commandesService.getCommandesBash(),
+      commandesService.getCommandesPowershell(),
+    ]);
 
-    res.json(await commandesService.getCommandes(typeOs));
+    res.json({ commandeBash, commandePowershell });
   } catch {
-    res.status(500).json({ error: 'Erreur commandes' });
+    res.status(500).json({ error: 'Erreur lors de la récupération des commandes' });
   }
 });
 

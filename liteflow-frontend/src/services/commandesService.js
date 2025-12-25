@@ -1,5 +1,5 @@
-export async function fetchCommandes(type) {
-  const response = await fetch(`api/commandes?typeOs=${type}`);
+export async function fetchCommandes() {
+  const response = await fetch(`api/commandes`);
   if (!response.ok) {
     throw new Error(`Erreur HTTP: ${response.status}`);
   }

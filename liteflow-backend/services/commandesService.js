@@ -27,18 +27,20 @@ class CommandesService {
   // ====================================
   // Commande bash
   // ====================================
-  async getCommandes(type) {
+  async getCommandesBash() {
+    await this.verifierFile(commande_file_bash);
+    const data = await fs.readFile(commande_file_bash, 'utf-8');
+    return JSON.parse(data);
+  }
 
-    if(type === "bash"){
-      await this.verifierFile(commande_file_bash);
-      const data = await fs.readFile(commande_file_bash, 'utf-8');
-      return JSON.parse(data);
-    }else if(type === "powershell"){
-      await this.verifierFile(commande_file_powershell);
-      const data = await fs.readFile(commande_file_powershell, 'utf-8');
-      return JSON.parse(data);
-    }
 
+  // ====================================
+  // Commande powershell
+  // ====================================
+  async getCommandesPowershell() {
+    await this.verifierFile(commande_file_powershell);
+    const data = await fs.readFile(commande_file_powershell, 'utf-8');
+    return JSON.parse(data);
   }
 
   // ====================================
