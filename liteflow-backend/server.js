@@ -21,7 +21,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // ====================================
 // Routes
 // ====================================
@@ -42,13 +41,9 @@ app.get('/', (req, res) => {
     name: 'LiteFlow Backend API',
     version: '1.0.0',
     endpoints: [
-      'GET /api/cpu',
-      'GET /api/memory',
-      'GET /api/disk',
-      'GET /api/network',
       'GET /api/system-info',
-      'GET /api/processes?limit=10',
       'GET /api/dashboard',
+      'GET /api/processes?limit=10',
       'GET /health',
     ],
   });

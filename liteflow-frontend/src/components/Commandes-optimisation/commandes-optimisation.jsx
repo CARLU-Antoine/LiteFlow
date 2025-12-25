@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import './commandes-optimisation.css';
 import CustomDataGrid from '../CustomDataGrid/custom-datagrid.jsx';
 import * as XLSX from 'xlsx';
-import { fetchCommandes, ajouterCommande, supprimerCommande } from '../../services/Commandes/commandesService.js';
+import { fetchCommandes, ajouterCommande, supprimerCommande } from '../../services/commandesService.js';
 
 const baseColumns = [
   { field: 'id', headerName: 'ID', width: 100 },
