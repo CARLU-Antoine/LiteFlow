@@ -1,60 +1,82 @@
-import React, { useState } from "react";
-import SystemInfo from "./systeminfo";
+import { useEffect, useState } from "react";
 import CPUChart from "./cpu-chart";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 import NetworkAreaChart from "./network-chart";
 import DiskUsageChart from "./disk-chart";
 import MemoryUsageChart from "./memory-chart";
+import { fetchDashboard } from "../../services/dashboardService";
+import './dashboard.css';
 
 function Dashboard() {
-  const [value, setValue] = useState(0);
+  const [dashboardData, setDashboardData] = useState({
+    disk: [],
+    cpu: {},
+    network: [],
+    memory: {}
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  useEffect(() => {
+    let mounted = true; // pour éviter les mises à jour après démontage
+
+    const loadDashboard = async () => {
+      try {
+        const data = await fetchDashboard();
+        if (!mounted) return;
+        setDashboardData(data);
+        setError(null);
+      } catch (e) {
+        if (!mounted) return;
+        setError(e.message || "Erreur lors de la récupération du dashboard");
+      } finally {
+        if (!mounted) return;
+        setLoading(false);
+      }
+    };
+
+    loadDashboard();
+    const interval = setInterval(loadDashboard, 5000);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  if (error) {
+    return (
+      <div style={{ padding: 20, backgroundColor: '#ffebee', color: '#c62828' }}>
+        <h3>⚠️ Erreur</h3>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: 20, textAlign: 'center', color: '#666' }}>
+        Chargement du dashboard…
+      </div>
+    );
+  }
 
   return (
-    <>
-      <h1>Dashboard</h1>
+    <div className="container-components-dashboard">
+      <div className="item-component">
+        <DiskUsageChart data={dashboardData.disk} />
+      </div>
 
-      <Tabs value={value} onChange={handleChange}>
-        <Tab label="Réseau" />
-        <Tab label="Processeur" />
-        <Tab label="Disque" />
-        <Tab label="Mémoire" />
-        <Tab label="Système" />
-      </Tabs>
+      <div className="item-component">
+        <CPUChart data={dashboardData.cpu} />
+      </div>
 
-      <Box sx={{ mt: 2 }}>
-        {value === 0 && (
-          <div>
-            <NetworkAreaChart />
-          </div>
-        )}
-          {value === 1 && (
-          <div>
-            <CPUChart/>
-          </div>
-        )}
-        {value === 2 && (
-          <div>
-            <DiskUsageChart/>
-          </div>
-        )}
-        {value === 3 && (
-          <div>
-            <MemoryUsageChart/>
-          </div>
-        )}
-        {value === 4 && (
-          <div>
-            <SystemInfo />
-          </div>
-        )}
-      </Box>
-    </>
+      <div className="item-component">
+        <NetworkAreaChart data={dashboardData.network} />
+      </div>
+
+      <div className="item-component">
+        <MemoryUsageChart data={dashboardData.memory} />
+      </div>
+    </div>
   );
 }
 
