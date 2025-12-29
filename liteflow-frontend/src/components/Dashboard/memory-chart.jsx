@@ -25,13 +25,13 @@ function MemoryUsageChart({ data }) {
     tooltip: {
       shared: false,
       formatter: function () {
-        const label = this.series.name === 'Used' ? 'Mémoire utilisée' : 'Mémoire libre';
+        const label = this.series.name === 'Utilisée' ? 'Mémoire utilisée' : 'Mémoire libre';
         return `<b>${label}</b><br/>${this.y.toFixed(2)} Go`;
       },
     },
     series: [
-      { name: 'Utilisé', data: [usedGB], color: '#e74c3c' },
-      { name: 'Disponible', data: [freeGB], color: '#2ecc71' },
+      { name: 'Utilisée', data: [usedGB], color: '#e74c3c' },
+      { name: 'libre', data: [freeGB], color: '#2ecc71' },
     ],
     credits: { enabled: false },
   };

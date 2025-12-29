@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import CPUChart from "./cpu-chart";
 import NetworkAreaChart from "./network-chart";
+import Box from "@mui/material/Box";
+import Alert from "@mui/material/Alert";
 import DiskUsageChart from "./disk-chart";
 import MemoryUsageChart from "./memory-chart";
 import { fetchDashboard } from "../../services/dashboardService";
@@ -44,10 +46,9 @@ function Dashboard() {
 
   if (error) {
     return (
-      <div style={{ padding: 20, backgroundColor: '#ffebee', color: '#c62828' }}>
-        <h3>⚠️ Erreur</h3>
-        <p>{error}</p>
-      </div>
+        <Box sx={{ mb: 2, mt: 2 }}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
     );
   }
 

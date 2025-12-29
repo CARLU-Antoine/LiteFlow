@@ -1,1 +1,417 @@
-[]
+[
+  {
+    "id": 1,
+    "commande": "rm -rf ~/.cache/* && sudo rm -rf /var/tmp/* /tmp/*",
+    "description": "Vide tous les caches utilisateur et fichiers temporaires système",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 2,
+    "commande": "sudo rm -rf ~/Library/Caches/* ~/Library/Logs/*",
+    "description": "Vide les caches et logs utilisateur macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 3,
+    "commande": "sudo journalctl --vacuum-time=7d && sudo journalctl --vacuum-size=100M",
+    "description": "Nettoie les logs systemd (>7 jours ou >100Mo)",
+    "os": "Linux"
+  },
+  {
+    "id": 4,
+    "commande": "sudo truncate -s 0 /var/log/syslog",
+    "description": "Vide le fichier syslog sans le supprimer",
+    "os": "Linux"
+  },
+  {
+    "id": 5,
+    "commande": "sync && sudo sysctl -w vm.drop_caches=3",
+    "description": "Vide les caches du système de fichiers pour libérer de la RAM",
+    "os": "Linux"
+  },
+  {
+    "id": 6,
+    "commande": "sudo swapoff -a && sudo swapon -a",
+    "description": "Vide et réactive le swap pour améliorer les performances",
+    "os": "Linux"
+  },
+  {
+    "id": 7,
+    "commande": "sudo sysctl -w vm.swappiness=10",
+    "description": "Réduit l'utilisation du swap pour privilégier la RAM",
+    "os": "Linux"
+  },
+  {
+    "id": 8,
+    "commande": "sudo sysctl -w vm.vfs_cache_pressure=50",
+    "description": "Optimise le cache du système de fichiers",
+    "os": "Linux"
+  },
+  {
+    "id": 9,
+    "commande": "sudo fstrim -av",
+    "description": "TRIM manuel sur tous les SSD pour améliorer les performances",
+    "os": "Linux"
+  },
+  {
+    "id": 10,
+    "commande": "sudo systemctl enable fstrim.timer",
+    "description": "Active le TRIM automatique hebdomadaire pour SSD",
+    "os": "Linux"
+  },
+  {
+    "id": 11,
+    "commande": "sudo apt autoremove --purge -y",
+    "description": "Supprime les anciens noyaux et paquets inutiles",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 12,
+    "commande": "sudo dnf remove $(dnf repoquery --installonly --latest-limit=-1 -q)",
+    "description": "Supprime les anciens noyaux Fedora",
+    "os": "Linux (Fedora)"
+  },
+  {
+    "id": 13,
+    "commande": "docker system prune -a --volumes -f",
+    "description": "Nettoie tous les conteneurs, images, volumes et réseaux Docker inutilisés",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 14,
+    "commande": "docker image prune -a -f",
+    "description": "Supprime toutes les images Docker inutilisées",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 15,
+    "commande": "docker volume prune -f",
+    "description": "Supprime tous les volumes Docker non utilisés",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 16,
+    "commande": "docker container prune -f",
+    "description": "Supprime tous les conteneurs Docker arrêtés",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 17,
+    "commande": "sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt autoclean",
+    "description": "Met à jour le système et nettoie les paquets inutiles",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 18,
+    "commande": "sudo dnf upgrade -y && sudo dnf autoremove -y && sudo dnf clean all",
+    "description": "Met à jour et nettoie Fedora/RHEL",
+    "os": "Linux (Fedora/RHEL)"
+  },
+  {
+    "id": 24,
+    "commande": "sudo systemctl disable bluetooth.service",
+    "description": "Désactive le Bluetooth au démarrage pour économiser des ressources",
+    "os": "Linux"
+  },
+  {
+    "id": 25,
+    "commande": "sudo systemctl disable cups.service",
+    "description": "Désactive le service d'impression si inutile",
+    "os": "Linux"
+  },
+  {
+    "id": 26,
+    "commande": "sudo mdutil -E /",
+    "description": "Reconstruit l'index Spotlight pour accélérer les recherches (macOS)",
+    "os": "macOS"
+  },
+  {
+    "id": 28,
+    "commande": "sudo purge",
+    "description": "Libère la RAM et nettoie la mémoire cache sur macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 29,
+    "commande": "rm -rf ~/.Trash/*",
+    "description": "Vide la corbeille macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 30,
+    "commande": "rm -rf ~/.local/share/Trash/*",
+    "description": "Vide la corbeille Linux",
+    "os": "Linux"
+  },
+  {
+    "id": 31,
+    "commande": "find ~/.cache -type f -atime +30 -delete",
+    "description": "Supprime les fichiers cache non accédés depuis 30 jours",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 33,
+    "commande": "find ~ -type f -name '*.bak' -delete",
+    "description": "Supprime tous les fichiers de sauvegarde .bak",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 34,
+    "commande": "find ~ -type f -name '*~' -delete",
+    "description": "Supprime les fichiers temporaires éditeur",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 35,
+    "commande": "find ~ -type f -name '*.tmp' -delete",
+    "description": "Supprime tous les fichiers .tmp",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 36,
+    "commande": "rm -rf ~/.mozilla/firefox/*.default*/cache2/*",
+    "description": "Vide le cache Firefox",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 37,
+    "commande": "rm -rf ~/.cache/google-chrome/Default/Cache/*",
+    "description": "Vide le cache Chrome/Chromium",
+    "os": "Linux"
+  },
+  {
+    "id": 38,
+    "commande": "rm -rf ~/Library/Caches/Google/Chrome/Default/Cache/*",
+    "description": "Vide le cache Chrome macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 39,
+    "commande": "rm -rf ~/.config/chromium/Default/Cache/*",
+    "description": "Vide le cache Chromium",
+    "os": "Linux"
+  },
+  {
+    "id": 40,
+    "commande": "sudo apt-get clean && sudo apt-get autoclean",
+    "description": "Nettoie le cache APT en profondeur",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 41,
+    "commande": "sudo journalctl --rotate && sudo journalctl --vacuum-time=1s",
+    "description": "Force la rotation et supprime tous les logs archivés",
+    "os": "Linux"
+  },
+  {
+    "id": 42,
+    "commande": "echo 3 | sudo tee /proc/sys/vm/drop_caches",
+    "description": "Alternative pour vider les caches",
+    "os": "Linux"
+  },
+  {
+    "id": 45,
+    "commande": "sudo hdparm -I /dev/sda | grep TRIM",
+    "description": "Vérifie si le SSD supporte TRIM",
+    "os": "Linux"
+  },
+  {
+    "id": 46,
+    "commande": "systemctl list-unit-files --state=enabled",
+    "description": "Liste les services activés au démarrage pour désactiver les inutiles",
+    "os": "Linux"
+  },
+  {
+    "id": 48,
+    "commande": "sudo systemctl disable apache2.service",
+    "description": "Désactive Apache si inutile pour libérer ressources",
+    "os": "Linux"
+  },
+  {
+    "id": 49,
+    "commande": "sudo systemctl disable mysql.service",
+    "description": "Désactive MySQL si inutilisé",
+    "os": "Linux"
+  },
+  {
+    "id": 50,
+    "commande": "sudo systemctl disable docker.service",
+    "description": "Désactive Docker au démarrage si inutile",
+    "os": "Linux"
+  },
+  {
+    "id": 60,
+    "commande": "flatpak uninstall --unused -y && flatpak repair",
+    "description": "Supprime les runtimes Flatpak inutilisés et répare",
+    "os": "Linux"
+  },
+  {
+    "id": 61,
+    "commande": "sudo snap set system refresh.retain=2",
+    "description": "Limite les versions Snap conservées à 2 pour économiser espace",
+    "os": "Linux (Ubuntu/Snap)"
+  },
+  {
+    "id": 62,
+    "commande": "flatpak update -y",
+    "description": "Met à jour toutes les applications Flatpak",
+    "os": "Linux"
+  },
+  {
+    "id": 63,
+    "commande": "sudo snap refresh",
+    "description": "Met à jour tous les snaps installés",
+    "os": "Linux (Ubuntu/Snap)"
+  },
+  {
+    "id": 64,
+    "commande": "sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder",
+    "description": "Vide le cache DNS macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 65,
+    "commande": "sudo systemd-resolve --flush-caches",
+    "description": "Vide le cache DNS systemd-resolved",
+    "os": "Linux"
+  },
+  {
+    "id": 66,
+    "commande": "sudo /etc/init.d/nscd restart",
+    "description": "Redémarre le cache DNS nscd",
+    "os": "Linux"
+  },
+  {
+    "id": 67,
+    "commande": "sudo systemctl restart NetworkManager",
+    "description": "Redémarre le gestionnaire de réseau",
+    "os": "Linux"
+  },
+  {
+    "id": 68,
+    "commande": "sudo netplan apply",
+    "description": "Applique la configuration réseau Netplan",
+    "os": "Linux (Ubuntu)"
+  },
+  {
+    "id": 69,
+    "commande": "sudo ip link set eth0 down && sudo ip link set eth0 up",
+    "description": "Redémarre l'interface réseau eth0",
+    "os": "Linux"
+  },
+  {
+    "id": 71,
+    "commande": "ss -tuln",
+    "description": "Alternative moderne à netstat",
+    "os": "Linux"
+  },
+  {
+    "id": 73,
+    "commande": "rdfind -deleteduplicates true ~/",
+    "description": "Supprime les fichiers dupliqués (installer rdfind)",
+    "os": "Linux"
+  },
+  {
+    "id": 74,
+    "commande": "sudo unattended-upgrade -d",
+    "description": "Installe les mises à jour de sécurité automatiques",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 76,
+    "commande": "sudo apt update && sudo apt list --upgradable",
+    "description": "Liste les paquets pouvant être mis à jour",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 77,
+    "commande": "sudo freshclam",
+    "description": "Met à jour les définitions antivirus ClamAV",
+    "os": "Linux"
+  },
+  {
+    "id": 81,
+    "commande": "sudo -u postgres vacuumdb --all --analyze",
+    "description": "Optimise toutes les bases PostgreSQL",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 83,
+    "commande": "sudo -u postgres psql -c 'REINDEX DATABASE postgres;'",
+    "description": "Réindexe la base PostgreSQL",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 89,
+    "commande": "rm -rf ~/.mozilla/firefox/*.default*/cookies.sqlite ~/.mozilla/firefox/*.default*/storage",
+    "description": "Supprime cookies et stockage Firefox pour libérer espace et accélérer",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 90,
+    "commande": "rm -rf ~/.config/google-chrome/Default/History ~/.config/google-chrome/Default/Cookies",
+    "description": "Supprime l’historique et cookies Chrome pour nettoyer et accélérer",
+    "os": "Linux"
+  },
+  {
+    "id": 91,
+    "commande": "rm -rf ~/Library/Application\\ Support/Google/Chrome/Default/History ~/Library/Application\\ Support/Google/Chrome/Default/Cookies",
+    "description": "Supprime l’historique et cookies Chrome macOS",
+    "os": "macOS"
+  },
+  {
+    "id": 92,
+    "commande": "rm -rf ~/.cache/mozilla/firefox/*.default*/cache2",
+    "description": "Supprime le cache Firefox complet",
+    "os": "Linux/macOS"
+  },
+  {
+    "id": 93,
+    "commande": "sudo journalctl --vacuum-size=50M",
+    "description": "Réduit les logs systemd pour ne pas saturer le disque",
+    "os": "Linux"
+  },
+  {
+    "id": 94,
+    "commande": "sudo journalctl --vacuum-time=3d",
+    "description": "Supprime tous les logs systemd de plus de 3 jours",
+    "os": "Linux"
+  },
+  {
+    "id": 95,
+    "commande": "sudo apt-get autoremove && sudo apt-get clean",
+    "description": "Nettoie les paquets inutiles sur Debian/Ubuntu",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 96,
+    "commande": "sudo pacman -Syu --noconfirm && sudo pacman -Sc --noconfirm",
+    "description": "Met à jour et nettoie le système Arch Linux",
+    "os": "Linux (Arch)"
+  },
+  {
+    "id": 97,
+    "commande": "sudo zypper refresh && sudo zypper update -y && sudo zypper clean --all",
+    "description": "Met à jour et nettoie Zypper",
+    "os": "Linux (openSUSE)"
+  },
+  {
+    "id": 98,
+    "commande": "sudo apt-get purge -y snapd",
+    "description": "Supprime Snap si non utilisé pour libérer de l’espace disque",
+    "os": "Linux (Ubuntu)"
+  },
+  {
+    "id": 99,
+    "commande": "sudo rm -rf /var/cache/apt/archives/*.deb",
+    "description": "Supprime les paquets .deb téléchargés",
+    "os": "Linux (Debian/Ubuntu)"
+  },
+  {
+    "id": 100,
+    "commande": "sudo rm -rf /var/cache/yum/*",
+    "description": "Vide le cache YUM/DNF",
+    "os": "Linux (RHEL/CentOS)"
+  }
+]
+

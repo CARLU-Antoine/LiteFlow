@@ -44,3 +44,20 @@ export async function supprimerCommande(type, id) {
 
   return await response.json();
 }
+
+export async function fetchOptimiserPc(sudoPassword = null) {
+  const response = await fetch('/api/optimiser-pc', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ sudoPassword })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erreur HTTP: ${response.status}`);
+  }
+
+  const json = await response.json();
+  return json;
+}

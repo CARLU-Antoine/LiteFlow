@@ -3,6 +3,8 @@ const router = express.Router();
 const systemService = require('../services/systemService');
 const commandesService = require('../services/commandesService');
 
+let distribution = null;
+
 /* =========================
    SYSTEM
 ========================= */
@@ -63,6 +65,79 @@ router.get('/processes', async (req, res) => {
     res.json(await systemService.getProcesses(limit));
   } catch {
     res.status(500).json({ error: 'Erreur processus' });
+  }
+});
+
+/**
+ * @swagger
+ * /optimiser-pc:
+ *   post:
+ *     summary: Optimiser le PC
+ *     tags: [System]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sudoPassword:
+ *                 type: string
+ *                 description: Mot de passe sudo (Linux/Mac uniquement)
+ *     responses:
+ *       200:
+ *         description: Optimisation réussie
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 resultats:
+ *                   type: array
+ *       500:
+ *         description: Erreur lors de l'optimisation
+ */
+router.post('/optimiser-pc', async (req, res) => {
+  try {
+    // Récupération de la distribution une seule fois
+    if (distribution === null) {
+      const data = await systemService.getSystemInfo();
+      distribution = data.os.distro;
+    }
+
+    console.log('distribution',distribution)
+
+    let commandes;
+    if (distribution.toLowerCase() === 'win32') {
+      commandes = await commandesService.getCommandesPowershell();
+    } else {
+      // Linux ou macOS utilisent bash
+      commandes = await commandesService.getCommandesByPlatform(distribution);
+    }
+
+    // Récupérer le mot de passe sudo depuis le body (optionnel)
+    const sudoPassword = req.body?.sudoPassword || null;
+
+    // Exécuter les commandes
+    const resultats = await systemService.executeCommande(
+      process.platform, // Utiliser process.platform au lieu de distribution
+      commandes,
+      sudoPassword
+    );
+
+    res.json({ 
+      success: true,
+      distribution,
+      resultats 
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de l\'optimisation:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Erreur lors de l\'optimisation',
+      details: error.message 
+    });
   }
 });
 

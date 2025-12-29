@@ -43,6 +43,7 @@ app.get('/', (req, res) => {
     endpoints: [
       'GET /api/system-info',
       'GET /api/dashboard',
+      'GET /api/optimiser-pc',
       'GET /api/processes?limit=10',
       'GET /health',
     ],
