@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import './optimiser-pc.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,30 +8,53 @@ import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Alert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 import CustomDataGrid from '../CustomDataGrid/custom-datagrid.jsx';
 import * as XLSX from 'xlsx';
+import { fetchOptimiserPc } from '../../services/commandesService.js';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'Commande', headerName: 'Commandes', width: 200 },
-  { field: 'Description', headerName: 'Description de la commande', width: 150 },
-  { field: 'Résultat', headerName: 'Utilisation Mémoire (MB)', width: 180 },
-];
-
-const rows = [
-  { id: 1, Commande: 'ProcessusA.exe', Description: 25, Résultat: 150 },
-  { id: 2, Commande: 'ProcessusB.exe', Description: 15, Résultat: 100 },
-  { id: 3, Commande: 'ProcessusC.exe', Description: 45, Résultat: 300 },
-  { id: 4, Commande: 'ProcessusD.exe', Description: 5, Résultat: 50 },
-  { id: 5, Commande: 'ProcessusE.exe', Description: 30, Résultat: 200 },
+  { field: 'commande', headerName: 'Commandes', width: 300 },
+  { field: 'success', headerName: 'Statut', width: 100, 
+    renderCell: (params) => (
+      <span style={{ color: params.value ? 'green' : 'red' }}>
+        {params.value ? '✓ Réussi' : '✗ Échec'}
+      </span>
+    )
+  },
+  { field: 'output', headerName: 'Résultat', width: 400 },
 ];
 
 function OptimiserPc() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [etatButtonOptimiser, setEtatButtonOptimiser] = useState('Optimiser le pc');
+  const [progress, setProgress] = useState(0);
+  const [progressText, setProgressText] = useState('');
+  const [error, setError] = useState(null);
+  const [rows, setRows] = useState([]);
+
   const navigate = useNavigate();
-  const [selectedIds, setSelectedIds] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const [passwordSudo, setPasswordSudo] = useState(() => {
+    const savedPassword = localStorage.getItem('passwordSudo') || '';
+
+    return savedPassword;
+  });
+  
+  useEffect(() => {
+    if (!passwordSudo.trim()) {
+      setLoading(true);
+      setEtatButtonOptimiser('Saisir mot de passe sudo');
+    }
+  }, []);
 
   const handleSelectionChange = (ids, rows) => {
     setSelectedIds(ids);
@@ -39,24 +62,56 @@ function OptimiserPc() {
   };
 
   const handleClickDownload = () => {
-  if (selectedIds.length === 0) {
-    alert("Aucune ligne sélectionnée !");
-    return;
-  }
+    if (selectedIds.length === 0) {
+      alert("Aucune ligne sélectionnée !");
+      return;
+    }
 
-  // Créer une feuille de calcul à partir des données sélectionnées
-  const ws = XLSX.utils.json_to_sheet(selectedRows);
-  
-  // Créer un classeur
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Processus");
-  
-  // Télécharger le fichier
-  XLSX.writeFile(wb, "processus_selectionnés.xlsx");
-};
+    const ws = XLSX.utils.json_to_sheet(selectedRows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Optimisation");
+    XLSX.writeFile(wb, "optimisation_pc.xlsx");
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleClickRecherche = async () => {
+    try {
+      setLoading(true);
+      setVisible(true);
+      setError(null);
+      setProgress(0);
+      setProgressText('Initialisation...');
+
+      const data = await fetchOptimiserPc(passwordSudo, (progressData) => {
+        // Mise à jour de la progression en temps réel
+        setProgress(progressData.percentage);
+        setProgressText(`${progressData.current}/${progressData.total} - ${progressData.commandeName}`);
+      });
+
+      // Transformer les résultats pour le DataGrid
+      const formattedRows = data.resultats.map((result, index) => ({
+        id: index + 1,
+        commande: result.commande,
+        success: result.success,
+        output: result.success 
+          ? (result.output?.substring(0, 100) || 'Succès') 
+          : (result.error || 'Erreur inconnue')
+      }));
+
+      setRows(formattedRows);
+      setProgress(100);
+      setProgressText('Optimisation terminée !');
+
+    } catch (err) {
+      console.error('Erreur:', err);
+      setError(err.message || 'Erreur lors de l\'optimisation');
+      setProgressText('Erreur');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = (path, type) => {
@@ -68,8 +123,11 @@ function OptimiserPc() {
 
   return (
     <div className="container-optimiser-pc">
+
+
+
       <div className="header-optimiser-pc">
-        <Badge color="primary" badgeContent={10} showZero>
+        <Badge color="primary" badgeContent={rows.length} showZero>
           <Box
             onClick={handleClick}
             sx={{ cursor: 'pointer' }}
@@ -107,34 +165,70 @@ function OptimiserPc() {
         </svg>
       </div>
 
-      <div className="container-traitement-optimiser-pc">
-        <p>Optimisation en cours...</p>
+      {error && (
+        <Box sx={{ mb: 2, mt: 2 }}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      )}
 
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
+      <div className={`container-traitement-optimiser-pc ${visible ? '' : 'hidden'}`}>
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          {progressText}
+        </Typography>
+
+        <Box sx={{ width: '100%', mb: 2 }}>
+          <LinearProgress variant="determinate" value={progress} />
+          <Typography variant="caption" sx={{ mt: 0.5 }}>{progress}%</Typography>
         </Box>
 
-        <div className="header-optimiser-pc">
-          <svg id="btn-dowload-xlsx" onClick={handleClickDownload} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-            <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/>
-          </svg>
-        </div>
+        {rows.length > 0 && (
+          <>
+            <div className="header-optimiser-pc">
+              <svg 
+                id="btn-dowload-xlsx" 
+                onClick={handleClickDownload} 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 640 640"
+                style={{ cursor: 'pointer' }}
+              >
+                <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/>
+              </svg>
+            </div>
 
-        <CustomDataGrid
-          rows={rows}
-          columns={columns}
-          onSelectionChange={handleSelectionChange}
-          pageSize={10}
-          pageSizeOptions={[5, 10, 25, 50, 100]}
-          paperProps={{ sx: { height: '45vh', width: '100%' ,position: 'relative', marginTop: '20px' } }}
-        />
-        <Button variant="contained" id="btn-optimiser-pc">
-          Optimiser
-        </Button>
+            <CustomDataGrid
+              rows={rows}
+              columns={columns}
+              onSelectionChange={handleSelectionChange}
+              pageSize={10}
+              pageSizeOptions={[5, 10, 25, 50, 100]}
+              paperProps={{ 
+                sx: { 
+                  height: '45vh', 
+                  width: '100%', 
+                  position: 'relative', 
+                  marginTop: '20px' 
+                } 
+              }}
+            />
+          </>
+        )}
       </div>
+      { !passwordSudo.trim() && (
+        <Box sx={{ mb: 2, mt: 2 }}>
+          <Alert severity="error">Aucun mot de passe sudo enregistré, veuillez cliquer sur le bouton Information en haut à gauche de votre écran</Alert>
+        </Box>
+      )}
+
+      <Button 
+        variant="contained" 
+        id="btn-optimiser-pc"
+        onClick={handleClickRecherche}
+        disabled={loading}
+      >
+        {etatButtonOptimiser}
+      </Button>
     </div>
   );
 }
 
 export default OptimiserPc;
-

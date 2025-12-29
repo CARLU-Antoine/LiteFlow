@@ -25,6 +25,45 @@ class CommandesService {
   }
 
   // ====================================
+  // Récupérer les commandes par rapport à la distrubtion
+  // ====================================
+  async getCommandesByPlatform(platform) {
+    let osFilter;
+    
+    // Déterminer le filtre OS
+    switch (platform) {
+      case 'darwin':
+        osFilter = ['macOS', 'macOS/Linux', 'Linux/macOS'];
+        break;
+    case 'macOS':
+        osFilter = ['macOS', 'macOS/Linux', 'Linux/macOS'];
+        break;
+      case 'linux':
+        osFilter = ['Linux', 'Linux/macOS', 'macOS/Linux'];
+        break;
+      default:
+        return [];
+    }
+    
+    const commandesData=await this.getCommandesBash();
+
+    // Filtrer les commandes compatibles avec l'OS
+    return commandesData
+      .filter(cmd => {
+        const osField = cmd.os.toLowerCase();
+        return osFilter.some(filter => 
+          osField.includes(filter.toLowerCase())
+        );
+      })
+      .map(cmd => ({
+        id: cmd.id,
+        commande: cmd.commande,
+        description: cmd.description,
+        os: cmd.os
+      }));
+  }
+
+  // ====================================
   // Commande bash
   // ====================================
   async getCommandesBash() {
@@ -32,7 +71,6 @@ class CommandesService {
     const data = await fs.readFile(commande_file_bash, 'utf-8');
     return JSON.parse(data);
   }
-
 
   // ====================================
   // Commande powershell

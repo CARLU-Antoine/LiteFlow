@@ -1,0 +1,16 @@
+.container-edit-password-sudo{
+    display: flex;
+    align-items:flex-end;
+}
+
+#btn-edit-password-sudo{
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+}
+#btn-delete-password-sudo{
+    width: 36px;
+    height: 36px;
+    fill: red;
+    cursor:pointer;
+}

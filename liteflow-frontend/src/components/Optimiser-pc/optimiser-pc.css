@@ -31,6 +31,7 @@
     fill: yellow;
 }
 
+
 .container-traitement-optimiser-pc {
     display: flex;
     flex-direction: column;
@@ -39,9 +40,18 @@
     width: 100%;
 }
 
+.hidden {
+    display: none;
+}
+
+
 #btn-dowload-xlsx {
     width: 30px;
     height: 30px;
     cursor: pointer;
     left: 13%;
+}
+
+#btn-optimiser-pc{
+    margin-top: 10px;
 }
