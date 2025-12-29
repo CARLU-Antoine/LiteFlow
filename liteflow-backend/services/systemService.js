@@ -174,108 +174,10 @@ class SystemService {
       throw new Error('Erreur récupération processus: ' + error.message);
     }
   }
+  
   // ====================================
   // Exécuter les commandes d'optimisation en fonction de l'OS
   // ====================================
-  async executeCommande(os, commandes, sudoPassword = null, onProgress = null) {
-    if (!commandes || commandes.length === 0) {
-      console.warn('Aucune commande à exécuter');
-      return [];
-    }
-
-    const shell = os === 'win32' ? 'powershell.exe' : '/bin/bash';
-    const totalCommandes = commandes.length;
-    let completedCommandes = 0;
-    let successCount = 0;
-    let failedCount = 0;
-    let skippedCount = 0;
-
-    if (sudoPassword) {
-      console.log('Exécution avec privilèges sudo');
-    }
-
-    const updateProgress = (cmd, success, error = null) => {
-      completedCommandes++;
-      const percentage = Math.round((completedCommandes / totalCommandes) * 100);
-      
-      if (success) {
-        successCount++;
-        console.log(`✓ [${completedCommandes}/${totalCommandes}] ${percentage}% - ${cmd.description || cmd.commande}`);
-      } else {
-        const isNonCritical = error && (
-          error.includes('Operation not permitted') ||
-          error.includes('Permission denied') ||
-          error.includes('command not found') ||
-          error.includes('No such file') ||
-          error.includes('not installed') ||
-          error.includes('Running Homebrew as root')
-        );
-        
-        if (isNonCritical) {
-          skippedCount++;
-          console.log(`⚠️  [${completedCommandes}/${totalCommandes}] ${percentage}% - ${cmd.description || cmd.commande} (ignoré)`);
-        } else {
-          failedCount++;
-          console.error(`✗ [${completedCommandes}/${totalCommandes}] ${percentage}% - ${cmd.description || cmd.commande}`);
-        }
-      }
-      
-      if (onProgress) {
-        onProgress({
-          current: completedCommandes,
-          total: totalCommandes,
-          percentage,
-          commandeName: cmd.description || cmd.commande,
-          success,
-          successCount,
-          failedCount,
-          skippedCount
-        });
-      }
-    };
-
-    const results = [];
-
-    for (const cmd of commandes) {
-      try {
-        const output = await this.execCommandAsync(shell, cmd.commande, sudoPassword);
-        const result = { 
-          id: cmd.id,
-          commande: cmd.commande, 
-          description: cmd.description,
-          os: cmd.os,
-          output: output.substring(0, 500),
-          success: true 
-        };
-        results.push(result);
-        updateProgress(cmd, true);
-      } catch (error) {
-        const isNonCritical = 
-          error.message.includes('Operation not permitted') ||
-          error.message.includes('Permission denied') ||
-          error.message.includes('command not found') ||
-          error.message.includes('No such file') ||
-          error.message.includes('not installed') ||
-          error.message.includes('Running Homebrew as root');
-        
-        const result = { 
-          id: cmd.id,
-          commande: cmd.commande,
-          description: cmd.description,
-          os: cmd.os,
-          error: error.message.substring(0, 500),
-          success: false,
-          isNonCritical
-        };
-        results.push(result);
-        updateProgress(cmd, false, error.message);
-      }
-    }
-
-    console.log(`Terminé: ${successCount} réussies, ${skippedCount} ignorées, ${failedCount} échouées sur ${totalCommandes}`);
-    return results;
-  }
-  // Méthode utilitaire pour exécuter une commande en Promise
   async executeCommande(os, commandes, sudoPassword = null, onProgress = null) {
   if (!commandes || commandes.length === 0) {
     console.warn('Aucune commande à exécuter');
@@ -339,9 +241,6 @@ class SystemService {
     }
   };
 
-  // ====================================
-  // TOUTES LES COMMANDES EN PARALLÈLE
-  // ====================================
   const promises = commandes.map(async (cmd) => {
     try {
       const output = await this.execCommandAsync(shell, cmd.commande, sudoPassword);
