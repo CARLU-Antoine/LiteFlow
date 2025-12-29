@@ -105,41 +105,52 @@ router.post('/optimiser-pc', async (req, res) => {
       distribution = data.os.distro;
     }
 
-    console.log('distribution',distribution)
-
     let commandes;
+    
     if (distribution.toLowerCase() === 'win32') {
       commandes = await commandesService.getCommandesPowershell();
     } else {
-      // Linux ou macOS utilisent bash
+      // Linux / macOS
       commandes = await commandesService.getCommandesByPlatform(distribution);
     }
 
-    // Récupérer le mot de passe sudo depuis le body (optionnel)
     const sudoPassword = req.body?.sudoPassword || null;
 
-    // Exécuter les commandes
-    const resultats = await systemService.executeCommande(
-      process.platform, // Utiliser process.platform au lieu de distribution
-      commandes,
-      sudoPassword
-    );
+    const wss = req.app.get('wss');
 
-    res.json({ 
+    res.json({
       success: true,
+      started: true,
       distribution,
-      resultats 
+      commandesCount: commandes.length
     });
+
+    for (const ws of wss.clients) {
+      if (ws.readyState === 1) { // OPEN
+        systemService.executeCommande(
+          process.platform,
+          commandes,
+          sudoPassword,
+          (progressData) => {
+            ws.send(JSON.stringify(progressData));
+          }
+        ).catch(err => {
+          console.error('Erreur lors de l\'exécution des commandes:', err);
+          ws.send(JSON.stringify({ error: err.message }));
+        });
+      }
+    }
 
   } catch (error) {
     console.error('Erreur lors de l\'optimisation:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       error: 'Erreur lors de l\'optimisation',
-      details: error.message 
+      details: error.message
     });
   }
 });
+
 
 /* =========================
    COMMANDES

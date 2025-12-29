@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
+const WebSocket = require('ws');
+
 const config = require('./config/config');
 const apiRoutes = require('./routes/api');
 const swaggerUi = require('swagger-ui-express');
@@ -14,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // ====================================
-// Middleware de log des requêtes (temps réel)
+// Middleware de log des requêtes
 // ====================================
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
@@ -22,20 +25,24 @@ app.use((req, res, next) => {
 });
 
 // ====================================
-// Routes
+// Routes API
 // ====================================
 app.use('/api', apiRoutes);
 
+// ====================================
 // Health check
+// ====================================
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: Date.now(),
     uptime: process.uptime(),
   });
 });
 
+// ====================================
 // Route racine
+// ====================================
 app.get('/', (req, res) => {
   res.json({
     name: 'LiteFlow Backend API',
@@ -50,40 +57,73 @@ app.get('/', (req, res) => {
   });
 });
 
-
-
-// Swagger UI
+// ====================================
+// Swagger
+// ====================================
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// ====================================
+// Création serveur HTTP
+// ====================================
+const server = http.createServer(app);
+
+// ====================================
+// WebSocket Server
+// ====================================
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws, req) => {
+  console.log('🔌 Client WebSocket connecté');
+
+  ws.on('close', () => {
+    console.log('❌ Client WebSocket déconnecté');
+  });
+
+  ws.on('error', (err) => {
+    console.error('WebSocket error:', err);
+  });
+});
+
+// Helper d’envoi WebSocket
+function wsSend(ws, type, payload) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type, payload }));
+  }
+}
+
+// Rendre WS accessible aux routes
+app.set('wss', wss);
+app.set('wsSend', wsSend);
 
 // ====================================
 // Démarrage du serveur
 // ====================================
-app.listen(config.PORT, config.HOST, () => {
+server.listen(config.PORT, config.HOST, () => {
   console.log('\n ====================================');
   console.log('   LiteFlow Backend API démarré !');
+  console.log(`   http://${config.HOST}:${config.PORT}`);
   console.log('====================================');
 });
 
-
 // ====================================
-// Gestion des erreurs 404
+// Gestion 404
 // ====================================
 app.use((req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     error: 'Endpoint non trouvé',
     path: req.path,
   });
 });
 
 // ====================================
-// Gestion arrêt propre
+// Arrêt propre
 // ====================================
 process.on('SIGTERM', () => {
   console.log('\n👋 Arrêt du serveur...');
-  process.exit(0);
+  server.close(() => process.exit(0));
 });
 
 process.on('SIGINT', () => {
   console.log('\n👋 Arrêt du serveur...');
-  process.exit(0);
+  server.close(() => process.exit(0));
 });
