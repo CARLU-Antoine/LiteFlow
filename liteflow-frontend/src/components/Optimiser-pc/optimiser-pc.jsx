@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './optimiser-pc.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,16 +45,57 @@ function OptimiserPc() {
 
   const [passwordSudo, setPasswordSudo] = useState(() => {
     const savedPassword = localStorage.getItem('passwordSudo') || '';
-
     return savedPassword;
   });
-  
+
+  const wsRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:5173/ws');
+    wsRef.current = ws;
+
+    ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+
+    if (message.percentage !== undefined) {
+      setProgress(message.percentage);
+      setProgressText(`${message.current}/${message.total} - ${message.commandeName}`);
+    }
+
+    if (message.success !== undefined) {
+      setRows((prev) => [
+        ...prev,
+        {
+          id: prev.length + 1,
+          commande: message.commandeName,
+          success: message.success,
+          output: message.success
+            ? message.output?.substring(0, 100) || 'Succès'
+            : message.error || 'Échec',
+        },
+      ]);
+    }
+
+    if (message.current === message.total) {
+      setProgress(100);
+      setProgressText('Optimisation terminée !');
+      setLoading(false);
+    }
+  };
+
+
+
+    ws.onerror = (err) => console.error('WebSocket error', err);
+
+    return () => ws.close();
+  }, []);
+
   useEffect(() => {
     if (!passwordSudo.trim()) {
       setLoading(true);
       setEtatButtonOptimiser('Saisir mot de passe sudo');
     }
-  }, []);
+  }, [passwordSudo]);
 
   const handleSelectionChange = (ids, rows) => {
     setSelectedIds(ids);
@@ -66,16 +107,13 @@ function OptimiserPc() {
       alert("Aucune ligne sélectionnée !");
       return;
     }
-
     const ws = XLSX.utils.json_to_sheet(selectedRows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Optimisation");
     XLSX.writeFile(wb, "optimisation_pc.xlsx");
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
 
   const handleClickRecherche = async () => {
     try {
@@ -85,31 +123,12 @@ function OptimiserPc() {
       setProgress(0);
       setProgressText('Initialisation...');
 
-      const data = await fetchOptimiserPc(passwordSudo, (progressData) => {
-        // Mise à jour de la progression en temps réel
-        setProgress(progressData.percentage);
-        setProgressText(`${progressData.current}/${progressData.total} - ${progressData.commandeName}`);
-      });
-
-      // Transformer les résultats pour le DataGrid
-      const formattedRows = data.resultats.map((result, index) => ({
-        id: index + 1,
-        commande: result.commande,
-        success: result.success,
-        output: result.success 
-          ? (result.output?.substring(0, 100) || 'Succès') 
-          : (result.error || 'Erreur inconnue')
-      }));
-
-      setRows(formattedRows);
-      setProgress(100);
-      setProgressText('Optimisation terminée !');
+      await fetchOptimiserPc(passwordSudo);
 
     } catch (err) {
       console.error('Erreur:', err);
       setError(err.message || 'Erreur lors de l\'optimisation');
       setProgressText('Erreur');
-    } finally {
       setLoading(false);
     }
   };
@@ -123,9 +142,6 @@ function OptimiserPc() {
 
   return (
     <div className="container-optimiser-pc">
-
-
-
       <div className="header-optimiser-pc">
         <Badge color="primary" badgeContent={rows.length} showZero>
           <Box
@@ -151,7 +167,6 @@ function OptimiserPc() {
             <Box sx={{ cursor: 'pointer' }}>Powershell</Box>
             <Badge color="primary" badgeContent={10} showZero />
           </MenuItem>
-
           <MenuItem onClick={() => handleClose('/commandes-optimisation','Bash')} sx={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
             <Box sx={{ cursor: 'pointer' }}>Bash</Box>
             <Badge color="primary" badgeContent={10} showZero />
@@ -165,16 +180,10 @@ function OptimiserPc() {
         </svg>
       </div>
 
-      {error && (
-        <Box sx={{ mb: 2, mt: 2 }}>
-          <Alert severity="error">{error}</Alert>
-        </Box>
-      )}
+      {error && <Box sx={{ mb: 2, mt: 2 }}><Alert severity="error">{error}</Alert></Box>}
 
       <div className={`container-traitement-optimiser-pc ${visible ? '' : 'hidden'}`}>
-        <Typography variant="body1" sx={{ mb: 1 }}>
-          {progressText}
-        </Typography>
+        <Typography variant="body1" sx={{ mb: 1 }}>{progressText}</Typography>
 
         <Box sx={{ width: '100%', mb: 2 }}>
           <LinearProgress variant="determinate" value={progress} />
@@ -202,20 +211,18 @@ function OptimiserPc() {
               pageSize={10}
               pageSizeOptions={[5, 10, 25, 50, 100]}
               paperProps={{ 
-                sx: { 
-                  height: '45vh', 
-                  width: '100%', 
-                  position: 'relative', 
-                  marginTop: '20px' 
-                } 
+                sx: { height: '45vh', width: '100%', position: 'relative', marginTop: '20px' } 
               }}
             />
           </>
         )}
       </div>
+
       { !passwordSudo.trim() && (
         <Box sx={{ mb: 2, mt: 2 }}>
-          <Alert severity="error">Aucun mot de passe sudo enregistré, veuillez cliquer sur le bouton Information en haut à gauche de votre écran</Alert>
+          <Alert severity="error">
+            Aucun mot de passe sudo enregistré, veuillez cliquer sur le bouton Information en haut à gauche de votre écran
+          </Alert>
         </Box>
       )}
 
