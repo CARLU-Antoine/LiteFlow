@@ -4,7 +4,11 @@ const http = require('http');
 const WebSocket = require('ws');
 
 const config = require('./config/config');
-const apiRoutes = require('./routes/api');
+
+const apiSystem = require('./routes/apiSystem');
+const apiCommandes = require('./routes/apiCommandes');
+const apiOptimiser = require('./routes/apiOptimiser');
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
@@ -27,7 +31,9 @@ app.use((req, res, next) => {
 // ====================================
 // Routes API
 // ====================================
-app.use('/api', apiRoutes);
+app.use('/api', apiSystem);
+app.use('/api', apiCommandes);
+app.use('/api', apiOptimiser);
 
 // ====================================
 // Health check
